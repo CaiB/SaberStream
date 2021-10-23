@@ -12,7 +12,7 @@ namespace SaberStream.Sources
         /// <summary>Begins listening for, and handling console commands.</summary>
         public static void Start()
         {
-            ProcessThread = new Thread(ProcessCommands);
+            ProcessThread = new Thread(ProcessCommands) { Name = "Console Listener" };
             ProcessThread.Start();
             CommonEvents.Exit += HandleExit;
         }
@@ -23,7 +23,7 @@ namespace SaberStream.Sources
         {
             while (Continue)
             {
-                string? Line = Console.ReadLine();
+                string? Line = Console.ReadLine(); // TODO: This prevents the application from exiting until a line is submitted. Add cancellation mechanism.
                 if (Line == null) { continue; }
 
                 int FirstSpaceIndex = Line.IndexOf(' ');
@@ -47,6 +47,7 @@ namespace SaberStream.Sources
             Console.WriteLine("  exit|quit|stop: Close connections and exit");
             Console.WriteLine("  dl <key>: Requests the map with the given key be downloaded from BeatSaver");
             Console.WriteLine("  r: Reload the game's song library");
+            Console.WriteLine("  msg <message>: Sends a message to Twitch chat");
         }
 
         private static void HandleExit(object? sender, EventArgs evt) => Continue = false;

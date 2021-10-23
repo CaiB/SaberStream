@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SaberStream.Sources
 {
@@ -11,7 +7,10 @@ namespace SaberStream.Sources
 
         public delegate void ExitHandler(object? sender, EventArgs evt);
         public static event ExitHandler? Exit;
-        public static void InvokeExit(object? sender, EventArgs evt) => Exit?.Invoke(sender, evt);
-
+        public static void InvokeExit(object? sender, EventArgs evt)
+        {
+            Console.WriteLine("Exiting...");
+            Exit?.Invoke(sender, evt);
+        }
     }
 }

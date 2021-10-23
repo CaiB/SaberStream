@@ -90,6 +90,8 @@ namespace SaberStream.Graphics
 
         public void Render(float x, float y)
         {
+            if (this.NewGeometry == null) { return; }
+            this.Geometry = this.NewGeometry.ToArray();
             RectShader!.Use();
             GL.BindVertexArray(this.VertexArrayHandle);
             GL.BindBuffer(BufferTarget.ArrayBuffer, this.VertexBufferHandle);

@@ -5,8 +5,11 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using SaberStream.Data;
 using SaberStream.Graphics;
+using SaberStream.Helpers;
 using SaberStream.Sources;
 using System;
+using System.ComponentModel;
+using System.Threading;
 
 namespace SaberStream.Targets
 {
@@ -19,18 +22,21 @@ namespace SaberStream.Targets
         private BarRenderer? BarRender;
 
         private Texture? IconEasy, IconNormal, IconHard, IconExpert, IconExpertPlus;
+        private Texture? IconExclamation;
         private Texture? CoverArt;
         private Texture? DifficultyMap;
 
         private bool IsPlayingSong = false;
         private MapInfoPlaying? CurrentMap;
         private bool CoverArtChanged = false; // true when new cover art is ready to be uploaded
-        private byte[]? DifficultyTextureData = null; // null unless new texture data is ready to be uploaded
+        private static byte[]? DifficultyTextureData = null; // null unless new texture data is ready to be uploaded
 
         public Overlay(JToken config) : base(GetGameSettings(), GetNativeSettings())
         {
             this.DifficultyCalcResolution = config.Value<float?>("DifficultyResolution") ?? 2F;
         }
+
+        public static void NewDifficultyTexture(byte[] rawTexture) => DifficultyTextureData = rawTexture;
 
         private static GameWindowSettings GetGameSettings()
         {
@@ -65,6 +71,7 @@ namespace SaberStream.Targets
             this.IconHard = new("HardIcon.png", true);
             this.IconExpert = new("ExpertIcon.png", true);
             this.IconExpertPlus = new("ExpertPlusIcon.png", true);
+            this.IconExclamation = new("Exclamation.png", true);
             this.CoverArt = new(null, true);
             this.DifficultyMap = new(null, false);
 
@@ -72,6 +79,7 @@ namespace SaberStream.Targets
             
             GameStatus.StateTransition += HandleStateTransition;
             GameStatus.SongStarted += HandleSongStart;
+            CommonEvents.Exit += HandleExit;
             Console.WriteLine("Overlay loaded");
         }
 
@@ -92,6 +100,12 @@ namespace SaberStream.Targets
             RenderBasicInfo();
 
             SwapBuffers();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            CommonEvents.InvokeExit(this, new EventArgs());
         }
 
         private void RenderBasicInfo()
@@ -137,23 +151,23 @@ namespace SaberStream.Targets
             this.TextRender.RenderText("Combos", X_OFFSET - 68, 48, 0.35F);
 
             // Difficulty bar
-            if (this.DifficultyTextureData != null)
+            if (DifficultyTextureData != null)
             {
-                this.DifficultyMap!.NewDataRGBA(this.DifficultyTextureData, this.DifficultyTextureData.Length / 4, 1);
-                this.DifficultyTextureData = null;
+                this.DifficultyMap!.NewDataRGBA(DifficultyTextureData, DifficultyTextureData.Length / 4, 1);
+                DifficultyTextureData = null;
             }
             this.ImageRender.Render(this.DifficultyMap!, X_OFFSET, 30, BAR_WIDTH, 15);
 
             // Combo bar
             lock (GameStatus.CurrentPerformance)
             {
-                this.BarRender.Prepare(BAR_WIDTH, 30, GameStatus.CurrentPerformance.Count);
+                this.BarRender.Prepare(BAR_WIDTH, 10, GameStatus.CurrentPerformance.Count + 1);
                 foreach (PerformanceEntry Entry in GameStatus.CurrentPerformance)
                 {
                     float SegmentWidth = (float)(Entry.LastActionTime / CurrentMap.Length.TotalMilliseconds);
                     if (Entry.WasCorrect)
                     {
-                        this.BarRender.AddSegment(SegmentWidth, true, 0F, 0.8F, 0F);
+                        this.BarRender.AddSegment(SegmentWidth, false, 0F, 0.8F, 0F);
                         if (Entry.NoteCount >= 50)
                         {
                             float TextWidth = this.TextRender.TextWidth(Entry.NoteCount.ToString(), 0.4F);
@@ -161,10 +175,21 @@ namespace SaberStream.Targets
                             this.TextRender.RenderText(Entry.NoteCount.ToString(), X_OFFSET + XInset, 68, 0.4F);
                         }
                     }
-                    else { this.BarRender.AddSegment(SegmentWidth, true, 0.8F, 0F, 0F); }
+                    else { this.BarRender.AddSegment(SegmentWidth, false, 0.8F, 0F, 0F); }
                 }
             }
             this.BarRender.Render(X_OFFSET, 45);
+            lock (GameStatus.CurrentPerformance) // TODO: Make this not janky
+            {
+                foreach (PerformanceEntry Entry in GameStatus.CurrentPerformance)
+                {
+                    if (!Entry.WasCorrect)
+                    {
+                        float SegmentWidth = (float)(Entry.LastActionTime / CurrentMap.Length.TotalMilliseconds);
+                        this.ImageRender.Render(this.IconExclamation!, X_OFFSET + (SegmentWidth * BAR_WIDTH) - 8, 50, 16);
+                    }
+                }
+            }
         }
 
         private Texture? IconToUse(Difficulty diff)
@@ -188,8 +213,21 @@ namespace SaberStream.Targets
         private void HandleStateTransition(object? sender, GameStatus.StateTransitionEventArgs evt) => this.IsPlayingSong = evt.IsPlayingSong;
         private void HandleSongStart(object? sender, GameStatus.SongStartedEventArgs evt)
         {
-            this.CurrentMap = evt.Beatmap; // TODO: Calc beatmap difficulty
+            this.CurrentMap = evt.Beatmap;
             this.CoverArtChanged = true;
+            if (evt.Beatmap.MapFolder != null)
+            {
+                ThreadPool.QueueUserWorkItem(new WaitCallback(delegate (object? state)
+                {
+                    NPSCalc.CalculateDifficultyMap(evt.Beatmap.MapFolder, evt.Beatmap.DifficultyPlaying?.Difficulty ?? Difficulty.None, "Standard", (float)evt.Beatmap.Length.TotalSeconds, DifficultyCalcResolution); // TODO: hardcoded standard
+                    if (this.CurrentMap.Hash != null) { this.CurrentMap.Key = BeatSaver.GetKeyFromHash(this.CurrentMap.Hash); }
+                }), null);
+            }
+        }
+
+        private void HandleExit(object? sender, EventArgs evt)
+        {
+            if (sender != this) { Close(); }
         }
     }
 }

@@ -221,7 +221,7 @@ namespace SaberStream.Sources
                 WallCount = root.Value<int>("obstaclesCount")
             };
 
-            MapInfoPlaying Result = new("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA HELP") // TODO: HOW TO KEY D:
+            MapInfoPlaying Result = new(null)
             {
                 SongName = root.Value<string>("songName"),
                 SongSubName = root.Value<string>("songSubName"),
@@ -229,6 +229,7 @@ namespace SaberStream.Sources
                 MapAuthor = root.Value<string>("levelAuthorName"),
                 CoverArt = CoverB64 == null ? null : Convert.FromBase64String(CoverB64),
                 Hash = root.Value<string>("songHash"),
+                MapFolder = root.Value<string>("levelFileLocation"),
                 BPM = root.Value<float>("songBPM"),
                 NJS = root.Value<float>("noteJumpSpeed"),
                 Length = TimeSpan.FromMilliseconds(root.Value<float>("length")),

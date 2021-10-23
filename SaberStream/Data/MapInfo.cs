@@ -8,7 +8,7 @@ namespace SaberStream.Data
 {
     public record MapInfo
     {
-        public string Key { get; init; }
+        public string? Key { get; set; }
         public string? SongName { get; init; }
         public string? SongSubName { get; init; }
         public string? SongAuthor { get; init; }
@@ -21,7 +21,7 @@ namespace SaberStream.Data
         public DifficultyInfo? Expert { get; init; }
         public DifficultyInfo? ExpertPlus { get; init; }
 
-        public MapInfo(string key) { this.Key = key; }
+        public MapInfo(string? key) { this.Key = key; }
 
         public DifficultyInfo? GetDifficulty(Difficulty diff)
         {
@@ -52,11 +52,12 @@ namespace SaberStream.Data
     {
         public byte[]? CoverArt { get; init; }
         public string? Hash { get; init; }
+        public string? MapFolder { get; init; }
         public float BPM { get; init; }
         public float NJS { get; init; }
         public TimeSpan SongPosition { get; init; }
         public DifficultyInfo? DifficultyPlaying { get; init; }
 
-        public MapInfoPlaying(string key) : base(key) { }
+        public MapInfoPlaying(string? key) : base(key) { }
     }
 }

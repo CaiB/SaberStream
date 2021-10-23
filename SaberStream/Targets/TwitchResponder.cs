@@ -42,6 +42,7 @@ namespace SaberStream.Targets
                 if (Diffs.ToString() == DIFF_START) { DiffDesc = "No regular difficulties found. Maybe 306/one-handed-only?"; }
                 else { DiffDesc = Diffs.Remove(Diffs.Length - 2, 2).ToString(); } // Remove the trailing ', '
 
+                Console.WriteLine($"Song request from {evt.Message.Username}: key {Key} ({Map.SongName} - {Map.SongAuthor}, Mapped by {Map.MapAuthor})");
                 Twitch.SendMessage(Info + '\n' + DiffDesc);
             }
         }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Graphics\Resources\EasyIcon.png" />
+    <None Remove="Graphics\Resources\Exclamation.png" />
     <None Remove="Graphics\Resources\ExpertIcon.png" />
     <None Remove="Graphics\Resources\ExpertPlusIcon.png" />
     <None Remove="Graphics\Resources\Font.frag" />
@@ -23,6 +24,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Graphics\Resources\EasyIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\Exclamation.png" />
     <EmbeddedResource Include="Graphics\Resources\ExpertIcon.png" />
     <EmbeddedResource Include="Graphics\Resources\ExpertPlusIcon.png" />
     <EmbeddedResource Include="Graphics\Resources\Font.frag" />

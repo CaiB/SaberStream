@@ -9,7 +9,7 @@ namespace SaberStream
 {
     class Program
     {
-        private const string CONFIG_FILE = "config.json";
+        private const string CONFIG_FILE = "SaberStream-Config.json";
 
         public static void Main(string[] args)
         {
@@ -50,6 +50,7 @@ namespace SaberStream
                 Overlay = new(OverlayConfig);
                 Overlay.Run();
             });
+            WindowThread.Name = "Overlay Window";
             WindowThread.Start();
 
 
