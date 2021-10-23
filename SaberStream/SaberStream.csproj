@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Graphics\Resources\EasyIcon.png" />
+    <None Remove="Graphics\Resources\ExpertIcon.png" />
+    <None Remove="Graphics\Resources\ExpertPlusIcon.png" />
+    <None Remove="Graphics\Resources\Font.frag" />
+    <None Remove="Graphics\Resources\Font.vert" />
+    <None Remove="Graphics\Resources\HardIcon.png" />
+    <None Remove="Graphics\Resources\NormalIcon.png" />
+    <None Remove="Graphics\Resources\Passthrough2Colour.frag" />
+    <None Remove="Graphics\Resources\Passthrough2Colour.vert" />
+    <None Remove="Graphics\Resources\Passthrough2Textured.frag" />
+    <None Remove="Graphics\Resources\Passthrough2Textured.vert" />
+    <None Remove="Graphics\Resources\PTS55F.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Graphics\Resources\EasyIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\ExpertIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\ExpertPlusIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\Font.frag" />
+    <EmbeddedResource Include="Graphics\Resources\Font.vert" />
+    <EmbeddedResource Include="Graphics\Resources\HardIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\NormalIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\Passthrough2Colour.frag" />
+    <EmbeddedResource Include="Graphics\Resources\Passthrough2Colour.vert" />
+    <EmbeddedResource Include="Graphics\Resources\Passthrough2Textured.frag" />
+    <EmbeddedResource Include="Graphics\Resources\Passthrough2Textured.vert" />
+    <EmbeddedResource Include="Graphics\Resources\PTS55F.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="OpenTK" Version="4.6.7" />
+    <PackageReference Include="SharpFont.NetStandard" Version="1.0.5" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
+    <PackageReference Include="TwitchLib" Version="3.2.0" />
+  </ItemGroup>
+
+</Project>
