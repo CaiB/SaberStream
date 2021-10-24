@@ -13,6 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stuff", "Stuff", "{352B5220-7401-47B0-B6A5-2B5531ECF91C}"
 	ProjectSection(SolutionItems) = preProject
 		SaberStream\bin\Debug\net5.0\SaberStream-Config.json = SaberStream\bin\Debug\net5.0\SaberStream-Config.json
+		SampleConfig.json = SampleConfig.json
 	EndProjectSection
 EndProject
 Global
