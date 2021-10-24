@@ -129,8 +129,10 @@ namespace SaberStream.Graphics
 
             // Iterate through all characters
             float CharXOffset = 0.0f;
-            foreach (char c in text)
+            for (int i = 0; i < text.Length; i++)
             {
+                char c = text[i];
+                if (c > this.Characters.Length) { c = '_'; }
                 if (this.Characters[c].TextureID <= 0) { continue; }
                 Character Character = this.Characters[c];
 

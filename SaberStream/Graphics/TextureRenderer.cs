@@ -36,15 +36,15 @@ namespace SaberStream.Graphics
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 4 * sizeof(float), 2 * sizeof(float));
         }
 
-        public void Render(Texture tex, float x, float y, float scale)
+        public void Render(Texture tex, float x, float y, float scale, float zIndex)
         {
-            Matrix4 TranslationMatrix = Matrix4.CreateScale(new Vector3(scale, scale, 1.0f)) * Matrix4.CreateTranslation(new Vector3(x, y, 0f));
+            Matrix4 TranslationMatrix = Matrix4.CreateScale(new Vector3(scale, scale, 1F)) * Matrix4.CreateTranslation(new Vector3(x, y, zIndex));
             Render(tex, ref TranslationMatrix);
         }
 
-        public void Render(Texture tex, float x, float y, float scaleX, float scaleY)
+        public void Render(Texture tex, float x, float y, float scaleX, float scaleY, float zIndex)
         {
-            Matrix4 TranslationMatrix = Matrix4.CreateScale(new Vector3(scaleX, scaleY, 1.0f)) * Matrix4.CreateTranslation(new Vector3(x, y, 0f));
+            Matrix4 TranslationMatrix = Matrix4.CreateScale(new Vector3(scaleX, scaleY, 1F)) * Matrix4.CreateTranslation(new Vector3(x, y, zIndex));
             Render(tex, ref TranslationMatrix);
         }
 

@@ -89,7 +89,8 @@ namespace SaberStream.Helpers
                             break;
                     }
                 }
-                    
+
+                string? Uploaded = JSON.Value<string>("uploaded");
                 MapInfoBeatSaver Map = new(key)
                 {
                     SongName = Metadata.Value<string>("songName") ?? JSON.Value<string>("name"),
@@ -97,7 +98,7 @@ namespace SaberStream.Helpers
                     SongAuthor = Metadata.Value<string>("songAuthorName"),
                     MapAuthor = Metadata.Value<string>("levelAuthorName"),
                     Length = TimeSpan.FromSeconds(Metadata.Value<int>("duration")), // TODO: Is this sufficient? If 0, was interpreting difficulty length as well before
-                    Uploaded = DateTime.Parse(JSON.Value<string>("uploaded") ?? DateTime.Now.ToString()), // TODO: make this nicer
+                    Uploaded = Uploaded == null ? DateTime.Now : DateTime.Parse(Uploaded),
                     DownloadURL = NewestVersion.Value<string>("downloadURL"),
                     Upvotes = Stats.Value<int>("upvotes"),
                     Downvotes = Stats.Value<int>("downvotes"),

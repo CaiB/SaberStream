@@ -9,7 +9,7 @@ layout (location = 1) uniform mat4 projection;
 
 void main()
 {
-    gl_Position = projection * model * vec4(aPosition, 0.0, 1.0);
+    gl_Position = projection * model * vec4(aPosition, -0.1, 1.0);
 	vertexColour = vec4(aColour, 1.0);
 	//vertexColour = vec4(0.0, 0.0, 1.0, 1.0);
 }

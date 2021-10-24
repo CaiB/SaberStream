@@ -143,8 +143,13 @@ namespace SaberStream.Sources
             CurrentMap = Beatmap;
             if (Beatmap != null)
             {
-                SongStarted?.Invoke(typeof(GameStatus), new SongStartedEventArgs(Beatmap, Beatmap.Hash == PreviousMapHash));
+                bool IsRetry = Beatmap.Hash == PreviousMapHash;
+                SongStarted?.Invoke(typeof(GameStatus), new SongStartedEventArgs(Beatmap, IsRetry));
                 PreviousMapHash = Beatmap.Hash;
+                if (!IsRetry)
+                {
+                    lock (CurrentPerformance) { CurrentPerformance = new(); }
+                }
             }
             StateTransition?.Invoke(typeof(GameStatus), new StateTransitionEventArgs(true));
         }

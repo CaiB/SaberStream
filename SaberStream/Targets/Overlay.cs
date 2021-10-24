@@ -58,8 +58,11 @@ namespace SaberStream.Targets
             base.OnLoad();
             this.VSync = VSyncMode.On;
             GL.ClearColor(0x81 / 256F, 0x14 / 256F, 0x26 / 256F, 1F);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.Blend);
+            GL.Enable(EnableCap.DepthTest);
+            //GL.DepthFunc(DepthFunction.Lequal);
+            GL.DepthMask(false);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             this.TextRender = new FontRenderer("PTS55F.ttf");
@@ -86,7 +89,7 @@ namespace SaberStream.Targets
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             base.OnRenderFrame(args);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             if (this.TextRender == null) { return; }
 
             this.TextRender.SetColour(1F, 1F, 1F);
@@ -124,7 +127,7 @@ namespace SaberStream.Targets
                 else { this.CoverArt!.NewDataPNG(this.CurrentMap.CoverArt); }
                 this.CoverArtChanged = false;
             }
-            this.ImageRender.Render(this.CoverArt!, 0, 100, 100);
+            this.ImageRender.Render(this.CoverArt!, 0F, 100F, 100F, 0F);
 
             const float LEFT_OFFSET = 115; // How much to move away from the left edge for the cover art
 
@@ -132,7 +135,7 @@ namespace SaberStream.Targets
             float NameWidth = this.TextRender.RenderText(this.CurrentMap.SongName ?? "", LEFT_OFFSET, 50, 1F);
             float SecondaryWidth = this.TextRender.RenderText(this.CurrentMap.SongSubName ?? "", (LEFT_OFFSET + NameWidth + 20), 50, 0.4F);
             Texture? DiffIcon = (this.CurrentMap.DifficultyPlaying == null) ? null : IconToUse(this.CurrentMap.DifficultyPlaying.Difficulty);
-            if (DiffIcon != null) { this.ImageRender.Render(DiffIcon, (LEFT_OFFSET + NameWidth + SecondaryWidth + 30F), 55F, 42F); }
+            if (DiffIcon != null) { this.ImageRender.Render(DiffIcon, (LEFT_OFFSET + NameWidth + SecondaryWidth + 30F), 55F, 42F, 0F); }
             
             // Second line: Author, Mapper, Key
             string Subtext = $"{this.CurrentMap.SongAuthor} / Mapper: {this.CurrentMap.MapAuthor}" + (this.CurrentMap.Key != null ? $" / Key: {this.CurrentMap.Key}" : "");
@@ -156,7 +159,7 @@ namespace SaberStream.Targets
                 this.DifficultyMap!.NewDataRGBA(DifficultyTextureData, DifficultyTextureData.Length / 4, 1);
                 DifficultyTextureData = null;
             }
-            this.ImageRender.Render(this.DifficultyMap!, X_OFFSET, 30, BAR_WIDTH, 15);
+            this.ImageRender.Render(this.DifficultyMap!, X_OFFSET, 30, BAR_WIDTH, 15, 0F);
 
             // Combo bar
             lock (GameStatus.CurrentPerformance)
@@ -167,29 +170,23 @@ namespace SaberStream.Targets
                     float SegmentWidth = (float)(Entry.LastActionTime / CurrentMap.Length.TotalMilliseconds);
                     if (Entry.WasCorrect)
                     {
+                        float Left = this.BarRender.GetCurrentWidth();
                         this.BarRender.AddSegment(SegmentWidth, false, 0F, 0.8F, 0F);
                         if (Entry.NoteCount >= 50)
                         {
                             float TextWidth = this.TextRender.TextWidth(Entry.NoteCount.ToString(), 0.4F);
-                            float XInset = ((SegmentWidth * BAR_WIDTH) - TextWidth) / 2F;
+                            float XInset = (Left * BAR_WIDTH) + (SegmentWidth / 2F * BAR_WIDTH) - (TextWidth / 2F);
                             this.TextRender.RenderText(Entry.NoteCount.ToString(), X_OFFSET + XInset, 68, 0.4F);
                         }
                     }
-                    else { this.BarRender.AddSegment(SegmentWidth, false, 0.8F, 0F, 0F); }
-                }
-            }
-            this.BarRender.Render(X_OFFSET, 45);
-            lock (GameStatus.CurrentPerformance) // TODO: Make this not janky
-            {
-                foreach (PerformanceEntry Entry in GameStatus.CurrentPerformance)
-                {
-                    if (!Entry.WasCorrect)
+                    else
                     {
-                        float SegmentWidth = (float)(Entry.LastActionTime / CurrentMap.Length.TotalMilliseconds);
-                        this.ImageRender.Render(this.IconExclamation!, X_OFFSET + (SegmentWidth * BAR_WIDTH) - 8, 50, 16);
+                        this.BarRender.AddSegment(SegmentWidth, false, 0.8F, 0F, 0F);
+                        this.ImageRender.Render(this.IconExclamation!, X_OFFSET + (SegmentWidth * BAR_WIDTH) - 8, 50, 16, 0.1F);
                     }
                 }
             }
+            this.BarRender.Render(X_OFFSET, 45);
         }
 
         private Texture? IconToUse(Difficulty diff)

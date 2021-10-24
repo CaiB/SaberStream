@@ -35,8 +35,7 @@ namespace SaberStream.Targets
         {
             TempDirectory = tempDir;
             MapDirectory = Path.Combine(gameDir, GAME_SUBDIR);
-            // TODO: Re-enable this
-            //if (!Directory.Exists(MapDirectory)) { throw new DirectoryNotFoundException($"Could not locate the game's map folder at '{MapDirectory}'."); }
+            if (!Directory.Exists(MapDirectory)) { throw new DirectoryNotFoundException($"Could not locate the game's map folder at '{MapDirectory}'."); }
         }
 
         /// <summary>Sends Ctrl+R keyboard input to the game to refresh the song library.</summary>
