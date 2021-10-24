@@ -22,18 +22,22 @@ namespace SaberStream.Sources
         public static MapInfoPlaying? CurrentMap { get; private set; }
         private static string? PreviousMapHash;
 
+        /// <summary>Attempts to connect to the game's WebSocket to receive status updates.</summary>
+        /// <param name="socket">The WebSocket URI to connect to</param>
         public static void Start(string? socket)
         {
             if (socket != null) { GameSocketURL = socket; }
             _ = Connect();
         }
 
+        /// <summary>Disconnects from the game's WebSocket.</summary>
         public static void Stop()
         {
             try { Disconnect().Wait(); }
             catch (Exception) { }
         }
 
+        /// <summary>Connects to the socket, and starts the receive loop.</summary>
         private static async Task Connect()
         {
             Console.WriteLine("Connecting to game...");
@@ -50,6 +54,7 @@ namespace SaberStream.Sources
             await Task.Factory.StartNew(ReceiveLoop, CancelSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
+        /// <summary>Terminates the socket connection, and stops the receive loop.</summary>
         private static async Task Disconnect()
         {
             if (WebSocket == null) { return; }
@@ -65,6 +70,7 @@ namespace SaberStream.Sources
             CancelSource = null;
         }
 
+        /// <summary>Processes incoming data from the socket, and dispatches data once received.</summary>
         private static async Task ReceiveLoop()
         {
             Console.WriteLine("Connected to game.");
@@ -93,6 +99,8 @@ namespace SaberStream.Sources
             finally { OutputStream?.Dispose(); }
         }
 
+        /// <summary>Reads a message as received from the socket, parses the data, and sends it to the corresponding listeners.</summary>
+        /// <param name="inputStream">A stream containing the socket message data</param>
         private static void ProcessResponse(Stream inputStream)
         {
             JObject JSON = JObject.Parse(new StreamReader(inputStream).ReadToEnd());

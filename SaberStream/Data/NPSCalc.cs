@@ -1,16 +1,16 @@
 ﻿using Newtonsoft.Json.Linq;
 using SaberStream.Targets;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SaberStream.Data
 {
     static class NPSCalc
     {
+        /// <summary>Reads the array of note objects out of the given difficulty file</summary>
+        /// <param name="path">The (JSON) .dat file for the specific difficulty to read from</param>
+        /// <returns>All notes and bombs in the level, or null if something went wrong while reading</returns>
         private static JArray? ReadLevelFile(string path)
         {
             JObject JSON;
@@ -19,6 +19,11 @@ namespace SaberStream.Data
             return Notes;
         }
 
+        /// <summary>Reads the Info.dat file for a level and retrieves some basic info from it.</summary>
+        /// <param name="folder">The directory where the Info.dat file is located</param>
+        /// <param name="difficulty">The difficulty to look for</param>
+        /// <param name="type">The level style to look for</param>
+        /// <returns>A Tuple of the difficulty-specific .dat filename, and the BPM of the level, or null if something went wrong while reading</returns>
         private static Tuple<string, float>? ReadMainFile(string folder, Difficulty difficulty, string type)
         {
             JObject JSON;
@@ -31,8 +36,18 @@ namespace SaberStream.Data
             return new(FileName, BPM);
         }
 
+        /// <summary>Finds how many song beats a single NPS analysis window should occupy</summary>
+        /// <param name="secondsPerBlock">The length, in seconds, of each NPS analysis window</param>
+        /// <param name="bpm">The BPM of the song</param>
+        /// <returns>The length in beats that each NPS analysis window is</returns>
         private static float GetNoteReadInterval(float secondsPerBlock, float bpm) => (secondsPerBlock / 60F) * bpm;
 
+        /// <summary>Takes in the full note array from the level, and analyzes how many notes are in each window. Bombs are ignored.</summary>
+        /// <param name="notes">The notes, as read from the level difficulty file</param>
+        /// <param name="secondsPerBlock">The length, in seconds, of each NPS analysis window</param>
+        /// <param name="songLength">The length of the song, in seconds</param>
+        /// <param name="bpm">The BPM of the song</param>
+        /// <returns>An array containing the number of notes contained in every secondsPerBlock-long window of the map (not NPS)</returns>
         private static int[] GetBinnedNoteCounts(JArray notes, float secondsPerBlock, float songLength, float bpm)
         {
             int BinCount = (int)Math.Ceiling(songLength / secondsPerBlock);
@@ -48,6 +63,9 @@ namespace SaberStream.Data
             return Bins;
         }
 
+        /// <summary>Converts a NPS figure into a colour hue for the difficulty mapping</summary>
+        /// <param name="notesPerSec">The number of notes per second, as a rough approximation of difficulty</param>
+        /// <returns>A hue, between 0 and 360</returns>
         private static float GetHueForSpeed(float notesPerSec)
         {
             if (notesPerSec < 3.0F) { return 120F; } // Green
@@ -57,6 +75,10 @@ namespace SaberStream.Data
             return 280F; // Pink
         }
 
+        /// <summary>Takes a set of analyzed NPS bins, and converts them into a texture using the colour-difficulty scale</summary>
+        /// <param name="bins">The NPS bins to convert. Each entry will be converted to 1 pixel</param>
+        /// <param name="secondsPerBlock">How many seconds of notes are contained in each bin, to calculate NPS</param>
+        /// <returns>A texture of at least 1 pixel representing the difficulty map</returns>
         private static byte[] BinsToTexture(int[] bins, float secondsPerBlock)
         {
             byte[] Result = new byte[4 * bins.Length];
@@ -72,6 +94,13 @@ namespace SaberStream.Data
             return Result;
         }
 
+        /// <summary>Reads a level and computes a coloured difficulty texture for the specified difficulty. Passes it to <see cref="Overlay"/> when done for display.</summary>
+        /// <remarks>This does some file I/O, bulk parsing, processing, and texture generation, and as such may take some time to execute. Don't run this on a latency-sensitive thread.</remarks>
+        /// <param name="mapFolder">The folder where the level is contained</param>
+        /// <param name="difficulty">The difficulty to analyze</param>
+        /// <param name="type">The level type to analyze</param>
+        /// <param name="songLength">How long the song is</param>
+        /// <param name="secondsPerBlock">The length, in seconds, that each output pixel should correspond to</param>
         public static void CalculateDifficultyMap(string mapFolder, Difficulty difficulty, string type, float songLength, float secondsPerBlock)
         {
             if (!File.Exists(Path.Combine(mapFolder, "info.dat")))
@@ -102,6 +131,11 @@ namespace SaberStream.Data
             Overlay.NewDifficultyTexture(Texture);
         }
 
+        /// <summary>Converts a HSV value to RGB.</summary>
+        /// <param name="h">Hue</param>
+        /// <param name="S">Saturation</param>
+        /// <param name="V">Value</param>
+        /// <returns>RGB, 8 bits each, in format 0x0RGB</returns>
         public static uint HsvToRgb(double h, double S, double V) // TODO: Copy-pasted, this looks like it could use some optimization.
         {
             double H = h;
@@ -187,7 +221,7 @@ namespace SaberStream.Data
             return (uint)((r << 16) | (g << 8) | b);
         }
 
-        /// <summary>Clamp a value to 0-255</summary>
+        /// <summary>Clamps a value to 0-255</summary>
         public static int Clamp(int i)
         {
             if (i < 0) return 0;

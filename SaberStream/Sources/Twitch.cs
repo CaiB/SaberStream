@@ -13,6 +13,10 @@ namespace SaberStream.Sources
         private static TwitchClient? Client;
         private static string? Channel;
 
+        /// <summary>Connects to Twitch chat, and prepares to receive various events and send messages.</summary>
+        /// <param name="username">The username to connect as</param>
+        /// <param name="authToken">The bot auth token to connect to Twitch with</param>
+        /// <param name="channel">The name of the channel to connect to the chat of</param>
         public static void Connect(string username, string authToken, string channel)
         {
             if (Client != null) { throw new InvalidOperationException("Already connected to Twitch"); }
@@ -28,6 +32,7 @@ namespace SaberStream.Sources
             Client.Connect();
         }
 
+        /// <summary>Disconnects from Twitch chat.</summary>
         public static void Disconnect()
         {
             Client?.Disconnect();
@@ -35,6 +40,8 @@ namespace SaberStream.Sources
             Client = null;
         }
 
+        /// <summary>Sends a message in chat as the bot user.</summary>
+        /// <param name="message">The message to send</param>
         public static void SendMessage(string message) => Client?.SendMessage(Channel, message);
 
         private static void ErrorHandler(object? sender, OnErrorEventArgs evt)

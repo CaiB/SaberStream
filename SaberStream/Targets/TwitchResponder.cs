@@ -6,6 +6,7 @@ using System.Text;
 
 namespace SaberStream.Targets
 {
+    /// <summary>Responds to !bsr requests in Twitch chat, and responds with basic map information from BeatSaver.</summary>
     public class TwitchResponder
     {
         public TwitchResponder()

@@ -36,18 +36,34 @@ namespace SaberStream.Graphics
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 4 * sizeof(float), 2 * sizeof(float));
         }
 
+        /// <summary>Renders a texture as specified.</summary>
+        /// <param name="tex">The texture to render</param>
+        /// <param name="x">The x-location in the window, in pixels, where the texture should be rendered</param>
+        /// <param name="y">The y-location in the window, in pixels, where the texture should be rendered</param>
+        /// <param name="scale">The scale, in pixels, to render the texture at</param>
+        /// <param name="zIndex">The Z location of the texture, used for overlapping</param>
         public void Render(Texture tex, float x, float y, float scale, float zIndex)
         {
             Matrix4 TranslationMatrix = Matrix4.CreateScale(new Vector3(scale, scale, 1F)) * Matrix4.CreateTranslation(new Vector3(x, y, zIndex));
             Render(tex, ref TranslationMatrix);
         }
 
+        /// <summary>Renders a texture as specified, with independent X and Y scaling.</summary>
+        /// <param name="tex">The texture to render</param>
+        /// <param name="x">The x-location in the window, in pixels, where the texture should be rendered</param>
+        /// <param name="y">The y-location in the window, in pixels, where the texture should be rendered</param>
+        /// <param name="scaleX">The horizontal scale, in pixels, to render the texture at</param>
+        /// <param name="scaleY">The vertical scale, in pixels, to render the texture at</param>
+        /// <param name="zIndex">The Z location of the texture, used for overlapping</param>
         public void Render(Texture tex, float x, float y, float scaleX, float scaleY, float zIndex)
         {
             Matrix4 TranslationMatrix = Matrix4.CreateScale(new Vector3(scaleX, scaleY, 1F)) * Matrix4.CreateTranslation(new Vector3(x, y, zIndex));
             Render(tex, ref TranslationMatrix);
         }
 
+        /// <summary>Renders the texture withthe given transformation.</summary>
+        /// <param name="tex">The texture to render</param>
+        /// <param name="transform">The transformation defining the location and scaling</param>
         private void Render(Texture tex, ref Matrix4 transform)
         {
             IconShader!.Use();
@@ -58,6 +74,8 @@ namespace SaberStream.Graphics
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
         }
 
+        /// <summary>Updates the screen-space projection to correctly place and size the texture in the window</summary>
+        /// <param name="newProj">The new projection matrix to use</param>
         public void UpdateProjection(ref Matrix4 newProj)
         {
             IconShader!.Use();

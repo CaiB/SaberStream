@@ -54,7 +54,10 @@ namespace SaberStream.Graphics
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
         }
 
-        private byte[] ImageToRGBA(Image<Rgba32> img)
+        /// <summary>Converts image data (e.g. PNG) to raw pixel data</summary>
+        /// <param name="img">The raw image data</param>
+        /// <returns>An array of pixels in {A B G R} format for each pixel</returns>
+        private static byte[] ImageToRGBA(Image<Rgba32> img)
         {
             if (!img.TryGetSinglePixelSpan(out Span<Rgba32> PixelSpan)) { throw new Exception("Could not get pixel span"); }
             byte[] Pixels = new byte[PixelSpan.Length * 4];
@@ -68,6 +71,8 @@ namespace SaberStream.Graphics
             return Pixels;
         }
 
+        /// <summary>Uploads new texture data to the GPU from a PNG file.</summary>
+        /// <param name="pngData">The PNG file's raw contents</param>
         public void NewDataPNG(byte[] pngData)
         {
             Image<Rgba32> TexImage = Image.Load<Rgba32>(pngData);
@@ -78,6 +83,10 @@ namespace SaberStream.Graphics
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
         }
 
+        /// <summary>Uploads new texture data to the GPU from raw pixel data.</summary>
+        /// <param name="rgbaData">The raw pixel data. Format is {A B G R}, repeated for each pixel. The length must be a multiple of 4.</param>
+        /// <param name="width">The width of the texture, in pixels</param>
+        /// <param name="height">The height of the texture, in pixels</param>
         public void NewDataRGBA(byte[] rgbaData, int width, int height)
         {
             GL.BindTexture(this.Type, this.Handle);
@@ -86,6 +95,8 @@ namespace SaberStream.Graphics
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
         }
 
+        /// <summary>Binds this texture so it's ready for use.</summary>
+        /// <param name="unit">The texture unit to use</param>
         public void Use(TextureUnit unit = TextureUnit.Texture0)
         {
             GL.ActiveTexture(unit);

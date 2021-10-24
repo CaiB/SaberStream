@@ -4,6 +4,7 @@ using System.IO;
 
 namespace SaberStream.Targets
 {
+    /// <summary>Listens for song started events, and writes each one into a log file to be used as YouTube chapter markers in the VOD.</summary>
     public static class SongLogFile
     {
         private static StreamWriter? LogFile;

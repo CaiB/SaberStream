@@ -7,9 +7,9 @@ using SharpFont;
 
 namespace SaberStream.Graphics
 {
-    class FontRenderer
+    /// <summary>Used to render a specific font in the overlay</summary>
+    public class FontRenderer
     {
-        private const uint BASE_HEIGHT = 48;
         private static readonly Vector2 HORIZONTAL = new(1F, 0F);
         private const string PATH_PREFIX = "SaberStream.Graphics.Resources.";
 
@@ -27,7 +27,10 @@ namespace SaberStream.Graphics
             public int Advance { get; set; }
         }
 
-        public FontRenderer(string fontFile)
+        /// <summary>Prepares the font and renderer for use.</summary>
+        /// <param name="fontFile">The name of the font file to use, it should be an embedded resource in the Resources folder</param>
+        /// <param name="baseHeight">The base height, in pixels, to render the font textures with. Trying to render fonts larger than this will create pixelated text, but making this larger increases the size of the textures</param>
+        public FontRenderer(string fontFile, uint baseHeight)
         {
             byte[] FontFile;
             Assembly Asm = Assembly.GetExecutingAssembly();
@@ -43,8 +46,7 @@ namespace SaberStream.Graphics
 
             this.Library = new();
             this.Face = new(this.Library, FontFile, 0);
-            //this.Face = new(this.Library, fontFile);
-            this.Face.SetPixelSizes(0, BASE_HEIGHT);
+            this.Face.SetPixelSizes(0, baseHeight);
 
             GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
 
@@ -115,8 +117,21 @@ namespace SaberStream.Graphics
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 4 * 4, 2 * 4);
         }
 
+        /// <summary>Renders the desired text horizontally.</summary>
+        /// <param name="text">The string to render</param>
+        /// <param name="x">The x-location, in pixels, in the window to render the text at</param>
+        /// <param name="y">The y-location, in pixels, in the window to render the text at</param>
+        /// <param name="scale">The height scaling from the base height (specified in constructor) which determines how tall the text will be rendered</param>
+        /// <returns>The width, in pixles, of the rendered text</returns>
         public float RenderText(string text, float x, float y, float scale) => RenderText(text, x, y, scale, HORIZONTAL);
 
+        /// <summary>Renders the desired text in the specified direction.</summary>
+        /// <param name="text">The string to render</param>
+        /// <param name="x">The x-location, in pixels, in the window to render the text at</param>
+        /// <param name="y">The y-location, in pixels, in the window to render the text at</param>
+        /// <param name="scale">The height scaling from the base height (specified in constructor) which determines how tall the text will be rendered</param>
+        /// <param name="dir">The rotation to apply to the text</param>
+        /// <returns>The width, in pixles, of the rendered text</returns>
         public float RenderText(string text, float x, float y, float scale, Vector2 dir)
         {
             this.Shader.Use();
@@ -162,11 +177,17 @@ namespace SaberStream.Graphics
             return CharXOffset;
         }
 
+        /// <summary>Calculates how wide a given string will be when rendered, without doing any rendering work.</summary>
+        /// <param name="text">The text to analyze</param>
+        /// <param name="scale">The font scaling that will be used when rendering</param>
+        /// <returns>The width, in pixels, that this text at this scale will occupy</returns>
         public float TextWidth(string text, float scale)
         {
             float CharXOffset = 0.0f;
-            foreach (char c in text)
+            for (int i = 0; i < text.Length; i++)
             {
+                char c = text[i];
+                if (c > this.Characters.Length) { c = '_'; }
                 if (this.Characters[c].TextureID <= 0) { continue; }
                 Character Character = this.Characters[c];
                 CharXOffset += (Character.Advance >> 6) * scale;
@@ -174,12 +195,18 @@ namespace SaberStream.Graphics
             return CharXOffset;
         }
 
+        /// <summary>Sets the colour of the text. This colour will remain until changed again.</summary>
+        /// <param name="red">The red component of the colour, in range 0.0~1.0</param>
+        /// <param name="green">The green component of the colour, in range 0.0~1.0</param>
+        /// <param name="blue">The blue component of the colour, in range 0.0~1.0</param>
         public void SetColour(float red, float green, float blue)
         {
             this.Shader.Use();
             GL.Uniform3(2, red, green, blue);
         }
 
+        /// <summary>Updates the screen-space projection to correctly place and size the text in the window</summary>
+        /// <param name="newProj">The new projection matrix to use</param>
         public void UpdateProjection(ref Matrix4 newProj)
         {
             this.Shader.Use();

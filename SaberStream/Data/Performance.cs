@@ -2,6 +2,7 @@
 
 namespace SaberStream.Data
 {
+    /// <summary>A representation of how the player is currently doing.</summary>
     public record Performance
     {
         public int Score { get; init; }
@@ -18,6 +19,7 @@ namespace SaberStream.Data
         public int MaxCombo { get; init; }
     }
 
+    /// <summary>A history entry repesenting a series of contiguous note hits or mistakes.</summary>
     public class PerformanceEntry
     {
         public int NoteCount { get; set; }

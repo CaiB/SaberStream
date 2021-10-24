@@ -20,6 +20,9 @@ namespace SaberStream.Data
 
     public static class DifficultyUtil
     {
+        /// <summary>Gets the 1 or 2-character shorthand for the given difficulty.</summary>
+        /// <param name="diff">THe difficulty to shorten</param>
+        /// <returns>A 1- or 2-character string for the difficulty, or null if the difficulty is not recognized or <see cref="Difficulty.None"/></returns>
         public static string? GetShortName(Difficulty diff)
         {
             if (diff.HasFlag(Difficulty.Easy)) { return "E"; }
@@ -30,6 +33,9 @@ namespace SaberStream.Data
             return null;
         }
 
+        /// <summary>Converts a difficulty name into a <see cref="Difficulty"/></summary>
+        /// <param name="diff">The difficulty name to parse</param>
+        /// <returns>The difficulty in the input, or <see cref="Difficulty.None"/> if not recognized</returns>
         public static Difficulty Parse(string? diff)
         {
             if (diff == null) { return Difficulty.None; }

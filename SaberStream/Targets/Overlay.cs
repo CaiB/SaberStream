@@ -65,7 +65,7 @@ namespace SaberStream.Targets
             GL.DepthMask(false);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            this.TextRender = new FontRenderer("PTS55F.ttf");
+            this.TextRender = new FontRenderer("PTS55F.ttf", 48);
             this.ImageRender = new();
             this.BarRender = new();
 
@@ -162,7 +162,7 @@ namespace SaberStream.Targets
             this.ImageRender.Render(this.DifficultyMap!, X_OFFSET, 30, BAR_WIDTH, 15, 0F);
 
             // Combo bar
-            lock (GameStatus.CurrentPerformance)
+            lock (GameStatus.CurrentPerformance) // TODO: Only do this update if there is new data to upload
             {
                 this.BarRender.Prepare(BAR_WIDTH, 10, GameStatus.CurrentPerformance.Count + 1);
                 foreach (PerformanceEntry Entry in GameStatus.CurrentPerformance)

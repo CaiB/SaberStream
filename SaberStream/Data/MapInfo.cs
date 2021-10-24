@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SaberStream.Data
 {
     public record MapInfo
     {
+        /// <summary>The BeatSaver key for this map, if it is identifiable and valid. Some maps may be null, including built-in maps.</summary>
         public string? Key { get; set; }
         public string? SongName { get; init; }
         public string? SongSubName { get; init; }
@@ -50,9 +47,15 @@ namespace SaberStream.Data
 
     public record MapInfoPlaying : MapInfo
     {
+        /// <summary>Raw data representing a PNG image of the cover art.</summary>
         public byte[]? CoverArt { get; init; }
+
+        /// <summary>A hash that uniquely identifies a specific version of a specific map.</summary>
         public string? Hash { get; init; }
+
+        /// <summary>The directory that this map is located in. Info.dat will be located directly in this folder.</summary>
         public string? MapFolder { get; init; }
+
         public float BPM { get; init; }
         public float NJS { get; init; }
         public TimeSpan SongPosition { get; init; }
