@@ -167,22 +167,22 @@ namespace SaberStream.Targets
                 this.BarRender.Prepare(BAR_WIDTH, 10, GameStatus.CurrentPerformance.Count + 1);
                 foreach (PerformanceEntry Entry in GameStatus.CurrentPerformance)
                 {
-                    float SegmentWidth = (float)(Entry.LastActionTime / CurrentMap.Length.TotalMilliseconds);
+                    float Right = (float)(Entry.LastActionTime / CurrentMap.Length.TotalMilliseconds);
                     if (Entry.WasCorrect)
                     {
                         float Left = this.BarRender.GetCurrentWidth();
-                        this.BarRender.AddSegment(SegmentWidth, false, 0F, 0.8F, 0F);
+                        this.BarRender.AddSegment(Right, false, 0F, 0.8F, 0F);
                         if (Entry.NoteCount >= 50)
                         {
                             float TextWidth = this.TextRender.TextWidth(Entry.NoteCount.ToString(), 0.4F);
-                            float XInset = (Left * BAR_WIDTH) + (SegmentWidth / 2F * BAR_WIDTH) - (TextWidth / 2F);
+                            float XInset = (((Left + Right) * BAR_WIDTH) - TextWidth) / 2F;
                             this.TextRender.RenderText(Entry.NoteCount.ToString(), X_OFFSET + XInset, 68, 0.4F);
                         }
                     }
                     else
                     {
-                        this.BarRender.AddSegment(SegmentWidth, false, 0.8F, 0F, 0F);
-                        this.ImageRender.Render(this.IconExclamation!, X_OFFSET + (SegmentWidth * BAR_WIDTH) - 8, 50, 16, 0.1F);
+                        this.BarRender.AddSegment(Right, false, 0.8F, 0F, 0F);
+                        this.ImageRender.Render(this.IconExclamation!, X_OFFSET + (Right * BAR_WIDTH) - 8, 50, 16, 0.1F);
                     }
                 }
             }
