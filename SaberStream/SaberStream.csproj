@@ -8,13 +8,18 @@
 
   <ItemGroup>
     <None Remove="Graphics\Resources\EasyIcon.png" />
+    <None Remove="Graphics\Resources\EasyTag.png" />
     <None Remove="Graphics\Resources\Exclamation.png" />
     <None Remove="Graphics\Resources\ExpertIcon.png" />
     <None Remove="Graphics\Resources\ExpertPlusIcon.png" />
+    <None Remove="Graphics\Resources\ExpertPlusTag.png" />
+    <None Remove="Graphics\Resources\ExpertTag.png" />
     <None Remove="Graphics\Resources\Font.frag" />
     <None Remove="Graphics\Resources\Font.vert" />
     <None Remove="Graphics\Resources\HardIcon.png" />
+    <None Remove="Graphics\Resources\HardTag.png" />
     <None Remove="Graphics\Resources\NormalIcon.png" />
+    <None Remove="Graphics\Resources\NormalTag.png" />
     <None Remove="Graphics\Resources\Passthrough2Colour.frag" />
     <None Remove="Graphics\Resources\Passthrough2Colour.vert" />
     <None Remove="Graphics\Resources\Passthrough2Textured.frag" />
@@ -24,13 +29,18 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Graphics\Resources\EasyIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\EasyTag.png" />
     <EmbeddedResource Include="Graphics\Resources\Exclamation.png" />
     <EmbeddedResource Include="Graphics\Resources\ExpertIcon.png" />
     <EmbeddedResource Include="Graphics\Resources\ExpertPlusIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\ExpertPlusTag.png" />
+    <EmbeddedResource Include="Graphics\Resources\ExpertTag.png" />
     <EmbeddedResource Include="Graphics\Resources\Font.frag" />
     <EmbeddedResource Include="Graphics\Resources\Font.vert" />
     <EmbeddedResource Include="Graphics\Resources\HardIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\HardTag.png" />
     <EmbeddedResource Include="Graphics\Resources\NormalIcon.png" />
+    <EmbeddedResource Include="Graphics\Resources\NormalTag.png" />
     <EmbeddedResource Include="Graphics\Resources\Passthrough2Colour.frag" />
     <EmbeddedResource Include="Graphics\Resources\Passthrough2Colour.vert" />
     <EmbeddedResource Include="Graphics\Resources\Passthrough2Textured.frag" />

@@ -23,6 +23,9 @@ namespace SaberStream.Sources
         private static string? PreviousMapHash;
         private static bool JustFailed = false;
 
+        /// <summary>This is set to true upon a fail or completion, but not in the event of a simple menu exit.</summary>
+        private static bool WasCaughtExit = false;
+
         /// <summary>Attempts to connect to the game's WebSocket to receive status updates.</summary>
         /// <param name="socket">The WebSocket URI to connect to</param>
         public static void Start(string? socket)
@@ -129,7 +132,9 @@ namespace SaberStream.Sources
                     break;
 
                 case "menu": // The menu is displayed
+                    if (!WasCaughtExit) { ProcessFinish(Status, false); }
                     StateTransition?.Invoke(typeof(GameStatus), new StateTransitionEventArgs(false));
+                    WasCaughtExit = false;
                     break;
 
                 case "obstacleEnter": // Combo is broken
@@ -178,10 +183,12 @@ namespace SaberStream.Sources
         }
 
         /// <summary>Makes necessary changes, and fires off events for a song stopping.</summary>
+        /// <remarks>This is not called if the player exits via menu.</remarks>
         /// <param name="status">The status object from the game</param>
         /// <param name="success">Whether the song was finished successfully</param>
         private static void ProcessFinish(JToken status, bool success)
         {
+            WasCaughtExit = true;
             if (!success)
             {
                 lock (MapHistory)

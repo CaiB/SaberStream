@@ -22,6 +22,7 @@ namespace SaberStream.Targets
         private BarRenderer? BarRender;
 
         private Texture? IconEasy, IconNormal, IconHard, IconExpert, IconExpertPlus;
+        private Texture? TagEasy, TagNormal, TagHard, TagExpert, TagExpertPlus;
         private Texture? IconExclamation;
         private Texture? CoverArt;
         private Texture? DifficultyMap;
@@ -75,6 +76,11 @@ namespace SaberStream.Targets
             this.IconHard = new("HardIcon.png", true);
             this.IconExpert = new("ExpertIcon.png", true);
             this.IconExpertPlus = new("ExpertPlusIcon.png", true);
+            this.TagEasy = new("EasyTag.png", true);
+            this.TagNormal = new("NormalTag.png", true);
+            this.TagHard = new("HardTag.png", true);
+            this.TagExpert = new("ExpertTag.png", true);
+            this.TagExpertPlus = new("ExpertPlusTag.png", true);
             this.IconExclamation = new("Exclamation.png", true);
             this.CoverArt = new(null, true);
             this.DifficultyMap = new(null, false);
@@ -83,6 +89,7 @@ namespace SaberStream.Targets
             
             GameStatus.StateTransition += HandleStateTransition;
             GameStatus.SongStarted += HandleSongStart;
+            GameStatus.SongEnded += HandleSongEnd;
             CommonEvents.Exit += HandleExit;
             Console.WriteLine("Overlay loaded");
         }
@@ -192,7 +199,7 @@ namespace SaberStream.Targets
                     else if (Entry.Type == HistoryType.Join)
                     {
                         Texture? DiffIcon = IconToUse(Entry.NewDifficulty);
-                        if (DiffIcon != null) { this.ImageRender.Render(DiffIcon, (this.BarRender.GetCurrentWidth() * BAR_WIDTH) + X_OFFSET, 90, 24, 0.4F); }
+                        if (DiffIcon != null) { this.ImageRender.Render(DiffIcon, (this.BarRender.GetCurrentWidth() * BAR_WIDTH) + X_OFFSET - 12, 95, 24, 0F); }
                     }
                 }
             }
@@ -218,7 +225,11 @@ namespace SaberStream.Targets
         }
 
         /// <summary>Called when the player switches between playing and using a menu.</summary>
-        private void HandleStateTransition(object? sender, GameStatus.StateTransitionEventArgs evt) => this.IsPlayingSong = evt.IsPlayingSong;
+        private void HandleStateTransition(object? sender, GameStatus.StateTransitionEventArgs evt)
+        {
+            this.IsPlayingSong = evt.IsPlayingSong;
+            if (!this.IsPlayingSong) { this.ShowResultsUntil = DateTime.UtcNow.AddSeconds(10); }
+        }
 
         /// <summary>Called when the player starts playing a song.</summary>
         private void HandleSongStart(object? sender, GameStatus.SongStartedEventArgs evt)
@@ -236,10 +247,7 @@ namespace SaberStream.Targets
         }
 
         /// <summary>Called when the player stops playing a song, via exiting or failure.</summary>
-        private void HandleSongEnd(object? sender, GameStatus.SongEndedEventArgs evt)
-        {
-            this.ShowResultsUntil = DateTime.UtcNow.AddSeconds(10);
-        }
+        private void HandleSongEnd(object? sender, GameStatus.SongEndedEventArgs evt) { }
 
         /// <summary>Called when the application is closing.</summary>
         private void HandleExit(object? sender, EventArgs evt)
