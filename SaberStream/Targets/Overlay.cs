@@ -28,6 +28,7 @@ namespace SaberStream.Targets
 
         private bool IsPlayingSong = false;
         private MapInfoPlaying? CurrentMap;
+        private DateTime ShowResultsUntil;
         private bool CoverArtChanged = false; // true when new cover art is ready to be uploaded
         private static byte[]? DifficultyTextureData = null; // null unless new texture data is ready to be uploaded
 
@@ -93,7 +94,7 @@ namespace SaberStream.Targets
             if (this.TextRender == null) { return; }
 
             this.TextRender.SetColour(1F, 1F, 1F);
-            if (this.IsPlayingSong)
+            if (this.IsPlayingSong || this.ShowResultsUntil >= DateTime.UtcNow) // Show results for some time after we stop playing.
             {
                 RenderSongInfo();
                 RenderBars();
@@ -162,27 +163,36 @@ namespace SaberStream.Targets
             this.ImageRender.Render(this.DifficultyMap!, X_OFFSET, 30, BAR_WIDTH, 15, 0F);
 
             // Combo bar
-            lock (GameStatus.CurrentPerformance) // TODO: Only do this update if there is new data to upload
+            lock (GameStatus.MapHistory) // TODO: Only do this update if there is new data to upload
             {
-                this.BarRender.Prepare(BAR_WIDTH, 10, GameStatus.CurrentPerformance.Count + 1);
-                foreach (PerformanceEntry Entry in GameStatus.CurrentPerformance)
+                this.BarRender.Prepare(BAR_WIDTH, 10, GameStatus.MapHistory.Count + 1);
+                foreach (HistoryEntry Entry in GameStatus.MapHistory)
                 {
-                    float Right = (float)(Entry.LastActionTime / CurrentMap.Length.TotalMilliseconds);
-                    if (Entry.WasCorrect)
+                    float Right = (float)(Entry.EndTime / CurrentMap.Length);
+                    if (Entry.Type == HistoryType.Hit)
                     {
                         float Left = this.BarRender.GetCurrentWidth();
                         this.BarRender.AddSegment(Right, false, 0F, 0.8F, 0F);
-                        if (Entry.NoteCount >= 50)
+                        if (Entry.NoteCount >= (CurrentMap.DifficultyPlaying?.NoteCount / 20 ?? 50))
                         {
                             float TextWidth = this.TextRender.TextWidth(Entry.NoteCount.ToString(), 0.4F);
                             float XInset = (((Left + Right) * BAR_WIDTH) - TextWidth) / 2F;
                             this.TextRender.RenderText(Entry.NoteCount.ToString(), X_OFFSET + XInset, 68, 0.4F);
                         }
                     }
-                    else
+                    else if (Entry.Type == HistoryType.Mistake)
                     {
                         this.BarRender.AddSegment(Right, false, 0.8F, 0F, 0F);
                         this.ImageRender.Render(this.IconExclamation!, X_OFFSET + (Right * BAR_WIDTH) - 8, 50, 16, 0.1F);
+                    }
+                    else if (Entry.Type == HistoryType.LevelFail)
+                    {
+                        this.BarRender.AddSegment(Right, false, 0F, 0F, 0.5F);
+                    }
+                    else if (Entry.Type == HistoryType.Join)
+                    {
+                        Texture? DiffIcon = IconToUse(Entry.NewDifficulty);
+                        if (DiffIcon != null) { this.ImageRender.Render(DiffIcon, (this.BarRender.GetCurrentWidth() * BAR_WIDTH) + X_OFFSET, 90, 24, 0.4F); }
                     }
                 }
             }
@@ -207,7 +217,10 @@ namespace SaberStream.Targets
             this.BarRender?.UpdateProjection(ref Projection);
         }
 
+        /// <summary>Called when the player switches between playing and using a menu.</summary>
         private void HandleStateTransition(object? sender, GameStatus.StateTransitionEventArgs evt) => this.IsPlayingSong = evt.IsPlayingSong;
+
+        /// <summary>Called when the player starts playing a song.</summary>
         private void HandleSongStart(object? sender, GameStatus.SongStartedEventArgs evt)
         {
             this.CurrentMap = evt.Beatmap;
@@ -222,6 +235,13 @@ namespace SaberStream.Targets
             }
         }
 
+        /// <summary>Called when the player stops playing a song, via exiting or failure.</summary>
+        private void HandleSongEnd(object? sender, GameStatus.SongEndedEventArgs evt)
+        {
+            this.ShowResultsUntil = DateTime.UtcNow.AddSeconds(10);
+        }
+
+        /// <summary>Called when the application is closing.</summary>
         private void HandleExit(object? sender, EventArgs evt)
         {
             if (sender != this) { Close(); }

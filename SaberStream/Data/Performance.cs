@@ -18,12 +18,4 @@ namespace SaberStream.Data
 
         public int MaxCombo { get; init; }
     }
-
-    /// <summary>A history entry repesenting a series of contiguous note hits or mistakes.</summary>
-    public class PerformanceEntry
-    {
-        public int NoteCount { get; set; }
-        public bool WasCorrect { get; set; }
-        public float LastActionTime { get; set; }
-    }
 }

@@ -18,9 +18,10 @@ namespace SaberStream.Sources
         private static ClientWebSocket? WebSocket;
         private static CancellationTokenSource? CancelSource;
 
-        public static List<PerformanceEntry> CurrentPerformance { get; private set; } = new();
+        public static List<HistoryEntry> MapHistory { get; private set; } = new();
         public static MapInfoPlaying? CurrentMap { get; private set; }
         private static string? PreviousMapHash;
+        private static bool JustFailed = false;
 
         /// <summary>Attempts to connect to the game's WebSocket to receive status updates.</summary>
         /// <param name="socket">The WebSocket URI to connect to</param>
@@ -154,9 +155,23 @@ namespace SaberStream.Sources
                 bool IsRetry = Beatmap.Hash == PreviousMapHash;
                 SongStarted?.Invoke(typeof(GameStatus), new SongStartedEventArgs(Beatmap, IsRetry));
                 PreviousMapHash = Beatmap.Hash;
-                if (!IsRetry)
+                if (IsRetry)
                 {
-                    lock (CurrentPerformance) { CurrentPerformance = new(); }
+                    JustFailed = true;
+                }
+                else
+                {
+                    lock (MapHistory)
+                    {
+                        MapHistory = new();
+                        MapHistory.Add(new()
+                        {
+                            Type = HistoryType.Join,
+                            NoteCount = 1,
+                            EndTime = TimeSpan.Zero,
+                            NewDifficulty = Beatmap.DifficultyPlaying?.Difficulty ?? Difficulty.None
+                        });
+                    }
                 }
             }
             StateTransition?.Invoke(typeof(GameStatus), new StateTransitionEventArgs(true));
@@ -167,6 +182,18 @@ namespace SaberStream.Sources
         /// <param name="success">Whether the song was finished successfully</param>
         private static void ProcessFinish(JToken status, bool success)
         {
+            if (!success)
+            {
+                lock (MapHistory)
+                {
+                    MapHistory.Add(new()
+                    {
+                        NoteCount = 1,
+                        Type = HistoryType.LevelFail
+                    });
+                }
+                JustFailed = true;
+            }
             SongEnded?.Invoke(typeof(GameStatus), new SongEndedEventArgs(success));
             StateTransition?.Invoke(typeof(GameStatus), new StateTransitionEventArgs(false));
             CurrentMap = null;
@@ -176,47 +203,82 @@ namespace SaberStream.Sources
         /// <param name="perf">The status->performance object from the game</param>
         private static void ProcessMistake(JToken perf)
         {
-            float SongPosition = perf.Value<int>("songPosition");
-            lock (CurrentPerformance)
+            int RawPosition = perf.Value<int>("songPosition");
+            TimeSpan SongPosition = TimeSpan.FromMilliseconds(RawPosition);
+            CheckFailure(SongPosition);
+
+            lock (MapHistory)
             {
-                if (CurrentPerformance.Count == 0 || CurrentPerformance[^1].WasCorrect)
+                if (MapHistory.Count == 0 || MapHistory[^1].Type != HistoryType.Mistake)
                 {
-                    CurrentPerformance.Add(new()
+                    MapHistory.Add(new()
                     {
-                        WasCorrect = false,
+                        Type = HistoryType.Mistake,
                         NoteCount = 1,
-                        LastActionTime = SongPosition
+                        EndTime = SongPosition
                     });
                 }
                 else
                 {
-                    CurrentPerformance[^1].NoteCount++;
-                    CurrentPerformance[^1].LastActionTime = SongPosition;
+                    MapHistory[^1].NoteCount++;
+                    MapHistory[^1].EndTime = SongPosition;
                 }
             }
-            Mistake?.Invoke(typeof(GameStatus), new MapProgressEventArgs(CurrentPerformance[^1].NoteCount, SongPosition));
+
+            Mistake?.Invoke(typeof(GameStatus), new MapProgressEventArgs(MapHistory[^1].NoteCount, SongPosition));
         }
 
         /// <summary>Makes necessary changes, and fires off events for a player cutting a note correctly.</summary>
         /// <param name="perf">The status->performance object from the game</param>
         private static void ProcessCut(JToken perf)
         {
-            float SongPosition = perf.Value<int>("songPosition");
-            if (CurrentPerformance.Count == 0 || !CurrentPerformance[^1].WasCorrect)
+            int RawPosition = perf.Value<int>("songPosition");
+            TimeSpan SongPosition = TimeSpan.FromMilliseconds(RawPosition);
+            CheckFailure(SongPosition);
+
+            lock (MapHistory)
             {
-                CurrentPerformance.Add(new()
+                if (MapHistory.Count == 0 || MapHistory[^1].Type != HistoryType.Hit)
                 {
-                    WasCorrect = true,
-                    NoteCount = 1,
-                    LastActionTime = SongPosition
+                    MapHistory.Add(new()
+                    {
+                        Type = HistoryType.Hit,
+                        NoteCount = 1,
+                        EndTime = SongPosition
+                    });
+                }
+                else
+                {
+                    MapHistory[^1].NoteCount++;
+                    MapHistory[^1].EndTime = SongPosition;
+                }
+            }
+
+            Cut?.Invoke(typeof(GameStatus), new MapProgressEventArgs(MapHistory[^1].NoteCount, SongPosition));
+        }
+
+        /// <summary>Checks whether we recently failed, and if so, sets the rejoin time to this event.</summary>
+        /// <remarks>This is a workaround for the multiplayer mod not setting the song position in time for the SongStart event. Instead we just get the position of the next event after rejoining.</remarks>
+        /// <param name="position">The current song position</param>
+        private static void CheckFailure(TimeSpan position)
+        {
+            if (!JustFailed) { return; }
+            lock (MapHistory)
+            {
+                // Amend fail event with rejoin time
+                HistoryEntry? FailEntry = MapHistory.FindLast(x => x.Type == HistoryType.LevelFail);
+                if (FailEntry != null) { FailEntry.EndTime = position; }
+
+                // Add join event
+                MapHistory.Add(new()
+                {
+                    Type = HistoryType.Join,
+                    EndTime = position,
+                    NewDifficulty = CurrentMap?.DifficultyPlaying?.Difficulty ?? Difficulty.None,
+                    NoteCount = 1
                 });
             }
-            else
-            {
-                CurrentPerformance[^1].NoteCount++;
-                CurrentPerformance[^1].LastActionTime = SongPosition;
-            }
-            Cut?.Invoke(typeof(GameStatus), new MapProgressEventArgs(CurrentPerformance[^1].NoteCount, SongPosition));
+            JustFailed = false;
         }
 
         /// <summary>Parses map info out of the status->beatmap section</summary>
@@ -305,9 +367,9 @@ namespace SaberStream.Sources
         public class MapProgressEventArgs : EventArgs
         {
             public int SequenceNumber { get; set; }
-            public float SongTime { get; set; }
+            public TimeSpan SongTime { get; set; }
             
-            public MapProgressEventArgs(int sequence, float time)
+            public MapProgressEventArgs(int sequence, TimeSpan time)
             {
                 this.SequenceNumber = sequence;
                 this.SongTime = time;

@@ -97,7 +97,7 @@ namespace SaberStream.Helpers
                     SongSubName = Metadata.Value<string>("songSubName"),
                     SongAuthor = Metadata.Value<string>("songAuthorName"),
                     MapAuthor = Metadata.Value<string>("levelAuthorName"),
-                    Length = TimeSpan.FromSeconds(Metadata.Value<int>("duration")), // TODO: Is this sufficient? If 0, was interpreting difficulty length as well before
+                    Length = TimeSpan.FromSeconds(Metadata.Value<int>("duration")),
                     Uploaded = Uploaded == null ? DateTime.Now : DateTime.Parse(Uploaded),
                     DownloadURL = NewestVersion.Value<string>("downloadURL"),
                     Upvotes = Stats.Value<int>("upvotes"),
