@@ -105,8 +105,8 @@ namespace SaberStream.Targets
             {
                 RenderSongInfo();
                 RenderBars();
-                //RenderPlaycount();
-                // TODO: Implement playcount
+                RenderPlaycount();
+                RenderBest();
             }
             RenderBasicInfo();
 
@@ -205,6 +205,70 @@ namespace SaberStream.Targets
                 }
             }
             this.BarRender.Render(X_OFFSET, 45);
+        }
+
+        private void RenderPlaycount()
+        {
+            if (this.TextRender == null || this.ImageRender == null || this.CurrentMap == null) { return; }
+
+            const float X_OFFSET = 1200F; // The location of this content on the bar
+            const float X_SPACING = 65F; // How far the two columns are spaced
+            const float X_TEXTOFFSET = 30F; // How far from the left edge of the icon the text should be rendered
+            const float ROW_TOP = 45F; // Y location of top row
+            const float ROW_MID = 70F; // Y location of middle row
+            const float ROW_BOT = 95F; // Y location of bottom row
+            const float NUM_FONT_SCALE = 0.4F; // The scale of the font used for playcount numbers
+            const float TEXT_SHIFT = -5F; // How much to shift up number text
+
+            this.TextRender.RenderText("Play Count", X_OFFSET + 10F, 16F, 0.4F);
+            // Top row
+            if (this.CurrentMap.StatsEasy != null && this.IconEasy != null)
+            {
+                this.ImageRender.Render(this.IconEasy, X_OFFSET, ROW_TOP, 24, 0F);
+                this.TextRender.RenderText(this.CurrentMap.StatsEasy.PlayCount.ToString(), X_OFFSET + X_TEXTOFFSET, ROW_TOP + TEXT_SHIFT, NUM_FONT_SCALE);
+            }
+            if (this.CurrentMap.StatsNormal != null && this.IconNormal != null)
+            {
+                this.ImageRender.Render(this.IconNormal, X_OFFSET + X_SPACING, ROW_TOP, 24, 0F);
+                this.TextRender.RenderText(this.CurrentMap.StatsNormal.PlayCount.ToString(), X_OFFSET + X_SPACING + X_TEXTOFFSET, ROW_TOP + TEXT_SHIFT, NUM_FONT_SCALE);
+            }
+            // Middle row
+            if (this.CurrentMap.StatsHard != null && this.IconHard != null)
+            {
+                this.ImageRender.Render(this.IconHard, X_OFFSET, ROW_MID, 24, 0F);
+                this.TextRender.RenderText(this.CurrentMap.StatsHard.PlayCount.ToString(), X_OFFSET + X_TEXTOFFSET, ROW_MID + TEXT_SHIFT, NUM_FONT_SCALE);
+            }
+            if (this.CurrentMap.StatsExpert != null && this.IconExpert != null)
+            {
+                this.ImageRender.Render(this.IconExpert, X_OFFSET + X_SPACING, ROW_MID, 24, 0F);
+                this.TextRender.RenderText(this.CurrentMap.StatsExpert.PlayCount.ToString(), X_OFFSET + X_SPACING + X_TEXTOFFSET, ROW_MID + TEXT_SHIFT, NUM_FONT_SCALE);
+            }
+            // Bottom row
+            if (this.CurrentMap.StatsExpertPlus != null && this.IconExpertPlus != null)
+            {
+                this.ImageRender.Render(this.IconExpertPlus, X_OFFSET, ROW_BOT, 24, 0F);
+                this.TextRender.RenderText(this.CurrentMap.StatsExpertPlus.PlayCount.ToString(), X_OFFSET + X_TEXTOFFSET, ROW_BOT + TEXT_SHIFT, NUM_FONT_SCALE);
+            }
+        }
+
+        private void RenderBest()
+        {
+            if (this.TextRender == null || this.ImageRender == null || this.CurrentMap == null) { return; }
+
+            const float X_CENTER = 1110F; // The location of this content on the bar
+
+            this.TextRender.RenderTextCentered("My Best:", X_CENTER, 16F, 0.4F);
+            PlayStats? Stats = this.CurrentMap.GetStats(this.CurrentMap.DifficultyPlaying?.Difficulty ?? Difficulty.None);
+            if (Stats == null || !Stats.ScoreIsValid)
+            {
+                this.TextRender.RenderTextCentered("None yet!", X_CENTER, 50F, 0.5F);
+            }
+            else
+            {
+                this.TextRender.RenderTextCentered($"{Stats.HighScore} ({Stats.MaxRank})", X_CENTER, 40F, 0.5F);
+                this.TextRender.RenderTextCentered("Max Combo:", X_CENTER, 70F, 0.4F);
+                this.TextRender.RenderTextCentered(Stats.FullCombo ? "FULL COMBO" : Stats.MaxCombo.ToString(), X_CENTER, 95F, 0.5F);
+            }
         }
 
         private Texture? IconToUse(Difficulty diff)

@@ -318,7 +318,37 @@ namespace SaberStream.Sources
                 SongPosition = TimeSpan.FromMilliseconds(root.Value<float>("songPosition")),
                 DifficultyPlaying = CurrentDifficulty
             };
+            ParsePlayStats(Result, root["levelStats"]);
             return Result;
+        }
+
+        /// <summary>Populates a map info object with play stats from the game.</summary>
+        /// <param name="map">The map info object to fill the Stats* fields of</param>
+        /// <param name="root">The "levelStats" object from the level event info</param>
+        private static void ParsePlayStats(MapInfoPlaying map, JToken? root)
+        {
+            if (root == null || !root.HasValues) { return; }
+
+            PlayStats? ParseDifficulty(string diff)
+            {
+                JToken? StatsArray = root?[diff];
+                if (StatsArray == null) { return null; }
+                return new()
+                {
+                    ScoreIsValid = StatsArray.Value<bool>("scoreIsValid"),
+                    FullCombo = StatsArray.Value<bool>("isFullCombo"),
+                    MaxCombo = StatsArray.Value<int>("maxCombo"),
+                    HighScore = StatsArray.Value<int>("highScore"),
+                    PlayCount = StatsArray.Value<int>("playCount"),
+                    MaxRank = StatsArray.Value<string?>("maxRank")
+                };
+            }
+
+            map.StatsEasy = ParseDifficulty("easy");
+            map.StatsNormal = ParseDifficulty("normal");
+            map.StatsHard = ParseDifficulty("hard");
+            map.StatsExpert = ParseDifficulty("expert");
+            map.StatsExpertPlus = ParseDifficulty("expertPlus");
         }
 
         /// <summary>Parses performance info out of the status->performance section</summary>

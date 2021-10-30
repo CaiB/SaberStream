@@ -61,6 +61,22 @@ namespace SaberStream.Data
         public TimeSpan SongPosition { get; init; }
         public DifficultyInfo? DifficultyPlaying { get; init; }
 
+        public PlayStats? StatsEasy { get; set; }
+        public PlayStats? StatsNormal { get; set; }
+        public PlayStats? StatsHard { get; set; }
+        public PlayStats? StatsExpert { get; set; }
+        public PlayStats? StatsExpertPlus { get; set; }
+
         public MapInfoPlaying(string? key) : base(key) { }
+
+        public PlayStats? GetStats(Difficulty diff)
+        {
+            if (diff.HasFlag(Difficulty.Easy)) { return this.StatsEasy; }
+            if (diff.HasFlag(Difficulty.Normal)) { return this.StatsNormal; }
+            if (diff.HasFlag(Difficulty.Hard)) { return this.StatsHard; }
+            if (diff.HasFlag(Difficulty.Expert)) { return this.StatsExpert; }
+            if (diff.HasFlag(Difficulty.ExpertPlus)) { return this.StatsExpertPlus; }
+            return null;
+        }
     }
 }

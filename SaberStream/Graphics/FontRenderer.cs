@@ -195,6 +195,12 @@ namespace SaberStream.Graphics
             return CharXOffset;
         }
 
+        public float RenderTextCentered(string text, float xCenter, float y, float scale)
+        {
+            float Width = TextWidth(text, scale);
+            return RenderText(text, xCenter - (Width / 2F), y, scale);
+        }
+
         /// <summary>Sets the colour of the text. This colour will remain until changed again.</summary>
         /// <param name="red">The red component of the colour, in range 0.0~1.0</param>
         /// <param name="green">The green component of the colour, in range 0.0~1.0</param>

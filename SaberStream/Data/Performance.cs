@@ -18,4 +18,14 @@ namespace SaberStream.Data
 
         public int MaxCombo { get; init; }
     }
+
+    public record PlayStats
+    {
+        public bool ScoreIsValid { get; init; }
+        public int HighScore { get; init; }
+        public int MaxCombo { get; init; }
+        public bool FullCombo { get; init; }
+        public int PlayCount { get; init; }
+        public string? MaxRank { get; init; }
+    }
 }
