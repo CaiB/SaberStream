@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SaberStream.Data
 {
-    static class NPSCalc
+    public static class NPSCalc
     {
         /// <summary>Reads the array of note objects out of the given difficulty file</summary>
         /// <param name="path">The (JSON) .dat file for the specific difficulty to read from</param>

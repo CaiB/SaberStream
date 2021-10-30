@@ -121,7 +121,7 @@ namespace SaberStream.Targets
 
         private void RenderBasicInfo()
         {
-            this.TextRender!.RenderText("twitch.tv/macyler", 1655, 35, 0.7F);
+            //this.TextRender!.RenderText("twitch.tv/macyler", 1655, 35, 0.7F);
         }
 
         private void RenderSongInfo()
@@ -144,6 +144,7 @@ namespace SaberStream.Targets
             float SecondaryWidth = this.TextRender.RenderText(this.CurrentMap.SongSubName ?? "", (LEFT_OFFSET + NameWidth + 20), 50, 0.4F);
             Texture? DiffIcon = (this.CurrentMap.DifficultyPlaying == null) ? null : IconToUse(this.CurrentMap.DifficultyPlaying.Difficulty);
             if (DiffIcon != null) { this.ImageRender.Render(DiffIcon, (LEFT_OFFSET + NameWidth + SecondaryWidth + 30F), 55F, 42F, 0F); }
+            // TODO: If the title & subtitle are too long, the text or difficulty tag will intersect with the bars. Consider cutting short the text if it is very long.
             
             // Second line: Author, Mapper, Key
             string Subtext = $"{this.CurrentMap.SongAuthor} / Mapper: {this.CurrentMap.MapAuthor}" + (this.CurrentMap.Key != null ? $" / Key: {this.CurrentMap.Key}" : "");
@@ -154,7 +155,7 @@ namespace SaberStream.Targets
         {
             if (this.TextRender == null || this.ImageRender == null || this.BarRender == null || this.CurrentMap == null) { return; }
 
-            const float X_OFFSET = 1100F;
+            const float X_OFFSET = 1400F;
             const float BAR_WIDTH = 500F;
 
             // Text
@@ -180,7 +181,7 @@ namespace SaberStream.Targets
                     {
                         float Left = this.BarRender.GetCurrentWidth();
                         this.BarRender.AddSegment(Right, false, 0F, 0.8F, 0F);
-                        if (Entry.NoteCount >= (CurrentMap.DifficultyPlaying?.NoteCount / 20 ?? 50))
+                        if (Entry.NoteCount >= (CurrentMap.DifficultyPlaying?.NoteCount / 20 ?? 50)) // TODO: This only depends on the current difficulty, and will change rendering for parts of the song played on another difficulty.
                         {
                             float TextWidth = this.TextRender.TextWidth(Entry.NoteCount.ToString(), 0.4F);
                             float XInset = (((Left + Right) * BAR_WIDTH) - TextWidth) / 2F;
