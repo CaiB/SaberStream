@@ -28,7 +28,7 @@ namespace SaberStream.Targets
                 MapInfoBeatSaver? Map = BeatSaver.GetMapInfo(Key);
                 if (Map == null) { Twitch.SendMessage("Couldn't get info about that level :("); return; }
 
-                string Info = $"\"{Map.SongName}\" by \"{Map.SongAuthor}\", mapped by {Map.MapAuthor}: {Map.DownloadCount} DLs, {(Map.ApprovalRating * 100F):F0}% approval, {Map.Length.Minutes}m{Map.Length.Seconds}s.";
+                string Info = $"\"{Map.SongName}\" by \"{Map.SongAuthor}\", mapped by {Map.MapAuthor}: {Map.TotalVotes} votes, {(Map.ApprovalRating * 100F):F0}% approval, {Map.Length.Minutes}m{Map.Length.Seconds}s.";
                 float SongLength = (float)Map.Length.TotalSeconds;
                 const string DIFF_START = "Difficulties: ";
 
