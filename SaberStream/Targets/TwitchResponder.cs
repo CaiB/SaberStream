@@ -21,8 +21,15 @@ namespace SaberStream.Targets
             if (Message.StartsWith("!bsr"))
             {
                 int SpaceIndex = Message.IndexOf(' ');
-                if (SpaceIndex < 0) { Twitch.SendMessage("Requests are welcome! Please specify a map key."); return; }
+                if (SpaceIndex < 0)
+                {
+                    Twitch.SendMessage("Requests are welcome! Please specify a map key.");
+                    Twitch.SendMessage("To find a song, please go to https://beatsaver.com, search for the song you want, and then paste the key here in chat.");
+                    Twitch.SendMessage("We prefer to play music, not meme maps. A rating above 80% usually means the map is fun.");
+                    return;
+                }
                 string Key = Message.Substring(SpaceIndex + 1).ToLower();
+                if (Key.Contains(' ')) { Key = Key.Substring(0, Key.IndexOf(' ')); }
                 if (Key.Length == 0 || Key.Length >= 7) { Twitch.SendMessage("That doesn't appear to be a valid map key, it should be a few letters/numbers long."); return; }
                 
                 MapInfoBeatSaver? Map = BeatSaver.GetMapInfo(Key);
