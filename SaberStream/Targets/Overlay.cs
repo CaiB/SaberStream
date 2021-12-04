@@ -309,6 +309,7 @@ namespace SaberStream.Targets
                     if (this.CurrentMap.Hash != null) { this.CurrentMap.Key = BeatSaver.GetKeyFromHash(this.CurrentMap.Hash); }
                 }), null);
             }
+            else { NewDifficultyTexture(new byte[] { 0, 0, 0, 0 }); }
         }
 
         /// <summary>Called when the player stops playing a song, via exiting or failure.</summary>

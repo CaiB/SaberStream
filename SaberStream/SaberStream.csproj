@@ -30,6 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="ShittyIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Graphics\Resources\EasyIcon.png" />
     <EmbeddedResource Include="Graphics\Resources\EasyTag.png" />
     <EmbeddedResource Include="Graphics\Resources\Exclamation.png" />
