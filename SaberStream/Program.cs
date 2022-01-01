@@ -4,6 +4,7 @@ using SaberStream.Targets;
 using System;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace SaberStream
 {
@@ -11,6 +12,7 @@ namespace SaberStream
     {
         private const string CONFIG_FILE = "SaberStream-Config.json";
 
+        [STAThread]
         public static void Main(string[] args)
         {
             // Read config file
@@ -58,7 +60,8 @@ namespace SaberStream
             WindowThread.Name = "Overlay Window";
             WindowThread.Start();
 
-
+            ApplicationConfiguration.Initialize();
+            Application.Run(new QueueViewer());
         }
     }
 }
