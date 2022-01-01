@@ -33,7 +33,7 @@ namespace SaberStream.Sources
 
                 if (Command == "exit" || Command == "quit" || Command == "stop") { CommonEvents.InvokeExit(null, new EventArgs()); }
                 else if (Command == "help") { PrintHelp(); }
-                else if (Command == "dl" && Remainder != null) { DownloadRequest?.Invoke(null, new DownloadRequestEventArgs(Remainder.ToLower())); }
+                else if (Command == "dl" && Remainder != null) { CommonEvents.InvokeDownloadRequest(null, new DownloadRequestEventArgs(Remainder.ToLower())); }
                 else if (Command == "r") { Game.ReloadLibrary(); }
                 else if (Command == "msg" && Remainder != null) { Twitch.SendMessage(Remainder); }
                 else { Console.WriteLine("Unrecognized command. Run 'help' to see usage info."); }
@@ -52,14 +52,6 @@ namespace SaberStream.Sources
 
         private static void HandleExit(object? sender, EventArgs evt) => Continue = false;
 
-        public class DownloadRequestEventArgs : EventArgs
-        {
-            public string Key { get; set; }
-            public DownloadRequestEventArgs(string key) { this.Key = key; }
-        }
-        public delegate void DownloadRequestHandler(object? sender, DownloadRequestEventArgs evt);
-
-        /// <summary>Invoked whenever the player approves/requests a song download.</summary>
-        public static event DownloadRequestHandler? DownloadRequest;
+        
     }
 }

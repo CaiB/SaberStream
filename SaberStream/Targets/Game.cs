@@ -95,6 +95,6 @@ namespace SaberStream.Targets
             }
         }
 
-        public static void HandleDownloadRequest(object? sender, ConsoleCommand.DownloadRequestEventArgs evt) => DownloadSong(evt.Key);
+        public static void HandleDownloadRequest(object? sender, DownloadRequestEventArgs evt) => DownloadSong(evt.Key);
     }
 }

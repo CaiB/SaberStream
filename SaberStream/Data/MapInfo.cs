@@ -45,6 +45,31 @@ namespace SaberStream.Data
         public MapInfoBeatSaver(string key) : base(key) { }
     }
 
+    public record MapInfoRequest : MapInfoBeatSaver
+    {
+        public string? Requestor { get; init; }
+        public MapInfoRequest(string key) : base(key) { }
+
+        public MapInfoRequest(MapInfoBeatSaver map, string key) : base(key)
+        {
+            this.SongName = map.SongName;
+            this.SongSubName = map.SongSubName;
+            this.SongAuthor = map.SongAuthor;
+            this.MapAuthor = map.MapAuthor;
+            this.Length = map.Length;
+            this.Easy = map.Easy;
+            this.Normal = map.Normal;
+            this.Hard = map.Hard;
+            this.Expert = map.Expert;
+            this.ExpertPlus = map.ExpertPlus;
+            this.Uploaded = map.Uploaded;
+            this.DownloadURL = map.DownloadURL;
+            this.Upvotes = map.Upvotes;
+            this.Downvotes = map.Downvotes;
+            this.DownloadCount = map.DownloadCount;
+        }
+    }
+
     public record MapInfoPlaying : MapInfo
     {
         /// <summary>Raw data representing a PNG image of the cover art.</summary>

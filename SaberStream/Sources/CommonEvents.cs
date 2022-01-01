@@ -11,5 +11,18 @@ namespace SaberStream.Sources
             Console.WriteLine("Exiting...");
             Exit?.Invoke(sender, evt);
         }
+
+        public delegate void DownloadRequestHandler(object? sender, DownloadRequestEventArgs evt);
+
+        /// <summary>Invoked whenever the player approves/requests a song download.</summary>
+        public static event DownloadRequestHandler? DownloadRequest;
+
+        public static void InvokeDownloadRequest(object? sender, DownloadRequestEventArgs evt) => DownloadRequest?.Invoke(sender, evt);
+    }
+
+    public class DownloadRequestEventArgs : EventArgs
+    {
+        public string Key { get; set; }
+        public DownloadRequestEventArgs(string key) { this.Key = key; }
     }
 }

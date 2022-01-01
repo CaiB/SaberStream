@@ -52,6 +52,9 @@ namespace SaberStream.Targets
 
                 Console.WriteLine($"Song request from {evt.Message.Username}: key {Key} ({Map.SongName} - {Map.SongAuthor}, Mapped by {Map.MapAuthor})");
                 Twitch.SendMessage(Info + '\n' + DiffDesc);
+
+                MapInfoRequest MapRequest = new(Map, Key) { Requestor = evt.Message.Username };
+                RequestQueue.AddItem(MapRequest);
             }
         }
 

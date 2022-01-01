@@ -29,7 +29,7 @@ namespace SaberStream
             // Basic operations
             ConsoleCommand.Start();
             Game.Start(TempDir, GameDir);
-            ConsoleCommand.DownloadRequest += Game.HandleDownloadRequest;
+            CommonEvents.DownloadRequest += Game.HandleDownloadRequest;
             GameStatus.Start(GameSocket);
             SongLogFile.Start();
 
