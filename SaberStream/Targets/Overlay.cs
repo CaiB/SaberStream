@@ -293,7 +293,7 @@ namespace SaberStream.Targets
         private void HandleStateTransition(object? sender, GameStatus.StateTransitionEventArgs evt)
         {
             this.IsPlayingSong = evt.IsPlayingSong;
-            if (!this.IsPlayingSong) { this.ShowResultsUntil = DateTime.UtcNow.AddSeconds(10); }
+            if (!this.IsPlayingSong) { this.ShowResultsUntil = DateTime.UtcNow.AddSeconds(30); }
         }
 
         /// <summary>Called when the player starts playing a song.</summary>
