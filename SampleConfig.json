@@ -1,18 +1,24 @@
 {
     "Modules":
     {
-        "Twitch": true
+        "Twitch": true,
+        "Overlay": true,
+        "Queue": true
     },
     "TempDir": "C:\\Tools\\TwitchTools\\",
     "GameDir": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Beat Saber\\",
     "Twitch":
     {
-        "ChannelName": "macyler",
-        "UserName": "theerzabot",
+        "ChannelName": "<CHANNEL TO MONITOR HERE>",
+        "UserName": "<BOT USERNAME HERE>",
         "AuthToken": "<PASTE AUTH TOKEN HERE>"
     },
     "Overlay":
     {
         
+    },
+    "Queue":
+    {
+
     }
 }

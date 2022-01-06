@@ -47,21 +47,29 @@ namespace SaberStream
                 TwitchResponder TwitchResp = new();
             }
 
-            // Read overlay config
-            JToken OverlayConfig = JSON["Overlay"] ?? throw new Exception("Could not find 'Overlay' section in the config file.");
-
-            // Start overlay
-            Overlay Overlay;
-            Thread WindowThread = new(() =>
+            bool OverlayEnabled = ModulesConfig.Value<bool?>("Overlay") ?? true;
+            if (OverlayEnabled)
             {
-                Overlay = new(OverlayConfig);
-                Overlay.Run();
-            });
-            WindowThread.Name = "Overlay Window";
-            WindowThread.Start();
+                // Read overlay config
+                JToken OverlayConfig = JSON["Overlay"] ?? throw new Exception("Could not find 'Overlay' section in the config file.");
 
-            ApplicationConfiguration.Initialize();
-            Application.Run(new QueueViewer());
+                // Start overlay
+                Overlay Overlay;
+                Thread WindowThread = new(() =>
+                {
+                    Overlay = new(OverlayConfig);
+                    Overlay.Run();
+                });
+                WindowThread.Name = "Overlay Window";
+                WindowThread.Start();
+            }
+
+            bool QueueEnabled = ModulesConfig.Value<bool?>("Queue") ?? true;
+            if (QueueEnabled)
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new QueueViewer());
+            }
         }
     }
 }
