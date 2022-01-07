@@ -32,8 +32,8 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.buttonAddToQueue = new System.Windows.Forms.Button();
             this.textBoxKeyToAdd = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.buttonDeleteLast = new System.Windows.Forms.Button();
+            this.labelLastSong = new System.Windows.Forms.Label();
             this.flowLayoutPanelQueue = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -47,8 +47,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.Controls.Add(this.buttonAddToQueue, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBoxKeyToAdd, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button1, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.buttonDeleteLast, 3, 2);
+            this.tableLayoutPanel1.Controls.Add(this.labelLastSong, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanelQueue, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -81,27 +81,29 @@
             this.textBoxKeyToAdd.TabIndex = 2;
             this.textBoxKeyToAdd.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxKeyToAdd_KeyDown);
             // 
-            // button1
+            // buttonDeleteLast
             // 
-            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button1.Location = new System.Drawing.Point(603, 418);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(194, 29);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Delete Last Played";
-            this.button1.UseVisualStyleBackColor = true;
+            this.buttonDeleteLast.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonDeleteLast.Enabled = false;
+            this.buttonDeleteLast.Location = new System.Drawing.Point(603, 418);
+            this.buttonDeleteLast.Name = "buttonDeleteLast";
+            this.buttonDeleteLast.Size = new System.Drawing.Size(194, 29);
+            this.buttonDeleteLast.TabIndex = 3;
+            this.buttonDeleteLast.Text = "Delete Last Played";
+            this.buttonDeleteLast.UseVisualStyleBackColor = true;
+            this.buttonDeleteLast.Click += new System.EventHandler(this.buttonDeleteLast_Click);
             // 
-            // label1
+            // labelLastSong
             // 
-            this.label1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.label1, 3);
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Location = new System.Drawing.Point(3, 415);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(594, 35);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "No Song Played Yet";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelLastSong.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.labelLastSong, 3);
+            this.labelLastSong.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelLastSong.Location = new System.Drawing.Point(3, 415);
+            this.labelLastSong.Name = "labelLastSong";
+            this.labelLastSong.Size = new System.Drawing.Size(594, 35);
+            this.labelLastSong.TabIndex = 4;
+            this.labelLastSong.Text = "No Song Played Yet";
+            this.labelLastSong.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // flowLayoutPanelQueue
             // 
@@ -139,8 +141,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button buttonAddToQueue;
         private System.Windows.Forms.TextBox textBoxKeyToAdd;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonDeleteLast;
+        private System.Windows.Forms.Label labelLastSong;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelQueue;
     }
 }

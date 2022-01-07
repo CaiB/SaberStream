@@ -30,6 +30,7 @@ namespace SaberStream
             ConsoleCommand.Start();
             Game.Start(TempDir, GameDir);
             CommonEvents.DownloadRequest += Game.HandleDownloadRequest;
+            CommonEvents.DeleteRequest += Game.HandleDeleteRequest;
             GameStatus.Start(GameSocket);
             SongLogFile.Start();
 

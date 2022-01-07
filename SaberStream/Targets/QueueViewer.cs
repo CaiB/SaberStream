@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -16,42 +17,58 @@ namespace SaberStream.Targets
 {
     public partial class QueueViewer : Form
     {
-        public void UpdateQueueItems(object? sender, QueueChangeEventArgs evt)
+        private enum Validity { EMPTY, VALID, INVALID }
+
+        private string? LastMapPath;
+
+        public QueueViewer()
         {
-            Invoke(() => UpdateQueueItems(evt));
+            InitializeComponent();
+            RequestQueue.QueueChanged += UpdateQueueItems;
+            GameStatus.SongStarted += SongStarted;
+            GameStatus.SongEnded += SongEnded;
+        }
+
+        private Validity CheckKeyInput()
+        {
+            string Key = this.textBoxKeyToAdd.Text;
+            if (string.IsNullOrWhiteSpace(Key)) { return Validity.EMPTY; }
+            return Regex.IsMatch(Key, "^[a-fA-F\\d]{1,6}$") ? Validity.VALID : Validity.INVALID;
         }
 
         private void UpdateQueueItems(QueueChangeEventArgs evt)
         {
             if (evt.Added)
             {
-                QueueListEntry Entry = new(evt.Map)
-                {
-                    Tag = evt.Map,
-                    BorderStyle = BorderStyle.FixedSingle
-                };
-
+                QueueListEntry Entry = new(evt.Map) { Tag = evt.Map };
                 this.flowLayoutPanelQueue.Controls.Add(Entry);
                 this.flowLayoutPanelQueue.Controls.SetChildIndex(Entry, evt.Index);
             }
             else
             {
                 Control? ToRemove = null;
-                foreach(Control Ctrl in this.flowLayoutPanelQueue.Controls)
+                foreach (Control Ctrl in this.flowLayoutPanelQueue.Controls)
                 {
-                    if ((Ctrl.Tag as MapInfo) == evt.Map) { ToRemove = Ctrl; break; }
+                    if (ReferenceEquals(Ctrl.Tag, evt.Map)) { ToRemove = Ctrl; break; }
                 }
-
                 if (ToRemove != null) { this.flowLayoutPanelQueue.Controls.Remove(ToRemove); }
-                
             }
         }
 
-        public QueueViewer()
+        private void SongStarted(MapInfoPlaying map)
         {
-            InitializeComponent();
-            RequestQueue.QueueChanged += UpdateQueueItems;
+            this.buttonDeleteLast.Enabled = false;
+            this.labelLastSong.Text = map.MapFolder;
+            this.LastMapPath = map.MapFolder;
         }
+
+        private void SongEnded() => this.buttonDeleteLast.Enabled = true;
+
+        public void SongStarted(object? sender, GameStatus.SongStartedEventArgs evt) { Invoke(() => SongStarted(evt.Beatmap)); }
+
+        public void SongEnded(object? sender, GameStatus.SongEndedEventArgs evt) { Invoke(() => SongEnded()); }
+
+        public void UpdateQueueItems(object? sender, QueueChangeEventArgs evt) { Invoke(() => UpdateQueueItems(evt)); }
 
         private void buttonAddToQueue_Click(object sender, EventArgs e)
         {
@@ -65,15 +82,6 @@ namespace SaberStream.Targets
             }
             this.textBoxKeyToAdd.Text = "";
         }
-
-        private Validity CheckKeyInput()
-        {
-            string Key = this.textBoxKeyToAdd.Text;
-            if (string.IsNullOrWhiteSpace(Key)) { return Validity.EMPTY; }
-            return Regex.IsMatch(Key, "^[a-fA-F\\d]{1,6}$") ? Validity.VALID : Validity.INVALID;
-        }
-
-        private enum Validity { EMPTY, VALID, INVALID }
 
         private void textBoxKeyToAdd_KeyDown(object sender, KeyEventArgs e)
         {
@@ -94,5 +102,16 @@ namespace SaberStream.Targets
         }
 
         private void QueueViewer_FormClosed(object sender, FormClosedEventArgs e) => CommonEvents.InvokeExit(sender, new());
+
+        private void buttonDeleteLast_Click(object sender, EventArgs e)
+        {
+            if (this.LastMapPath != null)
+            {
+                this.buttonDeleteLast.Enabled = false;
+                CommonEvents.InvokeDeleteRequest(this, new(this.LastMapPath));
+                if (!Directory.Exists(this.LastMapPath)) { this.labelLastSong.Text = $"Deleted {new DirectoryInfo(this.LastMapPath).Name}"; }
+                else { this.labelLastSong.Text = "Deletion Failed"; }
+            }
+        }
     }
 }

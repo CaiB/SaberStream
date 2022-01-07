@@ -13,12 +13,19 @@ namespace SaberStream.Sources
             Environment.Exit(0);
         }
 
-        public delegate void DownloadRequestHandler(object? sender, DownloadRequestEventArgs evt);
-
         /// <summary>Invoked whenever the player approves/requests a song download.</summary>
-        public static event DownloadRequestHandler? DownloadRequest;
-
+        public static event EventHandler<DownloadRequestEventArgs>? DownloadRequest;
         public static void InvokeDownloadRequest(object? sender, DownloadRequestEventArgs evt) => DownloadRequest?.Invoke(sender, evt);
+
+        /// <summary>Invoked whenever the player requests a song deletion.</summary>
+        public static event EventHandler<DeleteRequestEventArgs>? DeleteRequest;
+        public static void InvokeDeleteRequest(object? sender, DeleteRequestEventArgs evt) => DeleteRequest?.Invoke(sender, evt);
+    }
+
+    public class DeleteRequestEventArgs : EventArgs
+    {
+        public string Path { get; set; }
+        public DeleteRequestEventArgs(string path) { this.Path = path; }
     }
 
     public class DownloadRequestEventArgs : EventArgs

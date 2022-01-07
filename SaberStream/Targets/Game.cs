@@ -95,6 +95,23 @@ namespace SaberStream.Targets
             }
         }
 
+        private static void DeleteSong(string path)
+        {
+            if (MapDirectory == null) { return; }
+            Uri MapDir = new(MapDirectory);
+            if (!MapDir.IsBaseOf(new(path))) { Console.WriteLine($"Not deleting \"{path}\" because it wasn't in \"{MapDirectory}\""); return; }
+            if (!Directory.Exists(path)) { Console.WriteLine($"Not deleting \"{path}\" because it couldn't be found."); return; }
+            try
+            {
+                Directory.Delete(path, true);
+                ReloadLibrary();
+                Console.WriteLine($"Deleted {path} successfully.");
+            }
+            catch (Exception exc) { Console.WriteLine($"Failed to delete \"{path}\": {exc}"); }
+        }
+
         public static void HandleDownloadRequest(object? sender, DownloadRequestEventArgs evt) => DownloadSong(evt.Key);
+
+        public static void HandleDeleteRequest(object? sender, DeleteRequestEventArgs evt) => DeleteSong(evt.Path);
     }
 }

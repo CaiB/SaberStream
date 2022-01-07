@@ -91,7 +91,7 @@
             this.tableLayoutPanelMain.RowCount = 2;
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tableLayoutPanelMain.Size = new System.Drawing.Size(550, 50);
+            this.tableLayoutPanelMain.Size = new System.Drawing.Size(548, 48);
             this.tableLayoutPanelMain.TabIndex = 0;
             // 
             // tableLayoutPanelTop
@@ -109,7 +109,7 @@
             this.tableLayoutPanelTop.Name = "tableLayoutPanelTop";
             this.tableLayoutPanelTop.RowCount = 1;
             this.tableLayoutPanelTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelTop.Size = new System.Drawing.Size(290, 30);
+            this.tableLayoutPanelTop.Size = new System.Drawing.Size(288, 28);
             this.tableLayoutPanelTop.TabIndex = 0;
             // 
             // labelSongName
@@ -121,7 +121,7 @@
             this.labelSongName.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.labelSongName.Location = new System.Drawing.Point(3, 0);
             this.labelSongName.Name = "labelSongName";
-            this.labelSongName.Size = new System.Drawing.Size(157, 30);
+            this.labelSongName.Size = new System.Drawing.Size(155, 28);
             this.labelSongName.TabIndex = 0;
             this.labelSongName.Text = "Song Name Here";
             this.labelSongName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -132,9 +132,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelMapper.AutoSize = true;
-            this.labelMapper.Location = new System.Drawing.Point(166, 0);
+            this.labelMapper.Location = new System.Drawing.Point(164, 0);
             this.labelMapper.Name = "labelMapper";
-            this.labelMapper.Size = new System.Drawing.Size(80, 30);
+            this.labelMapper.Size = new System.Drawing.Size(80, 28);
             this.labelMapper.TabIndex = 1;
             this.labelMapper.Text = "MapperName";
             this.labelMapper.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -144,9 +144,9 @@
             this.labelApproval.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelApproval.AutoSize = true;
-            this.labelApproval.Location = new System.Drawing.Point(252, 0);
+            this.labelApproval.Location = new System.Drawing.Point(250, 0);
             this.labelApproval.Name = "labelApproval";
-            this.labelApproval.Size = new System.Drawing.Size(35, 30);
+            this.labelApproval.Size = new System.Drawing.Size(35, 28);
             this.labelApproval.TabIndex = 2;
             this.labelApproval.Text = "000%";
             this.labelApproval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -161,12 +161,12 @@
             this.tableLayoutPanelBottom.Controls.Add(this.labelKey, 1, 0);
             this.tableLayoutPanelBottom.Controls.Add(this.labelVotes, 2, 0);
             this.tableLayoutPanelBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanelBottom.Location = new System.Drawing.Point(0, 30);
+            this.tableLayoutPanelBottom.Location = new System.Drawing.Point(0, 28);
             this.tableLayoutPanelBottom.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanelBottom.Name = "tableLayoutPanelBottom";
             this.tableLayoutPanelBottom.RowCount = 1;
             this.tableLayoutPanelBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelBottom.Size = new System.Drawing.Size(290, 20);
+            this.tableLayoutPanelBottom.Size = new System.Drawing.Size(288, 20);
             this.tableLayoutPanelBottom.TabIndex = 1;
             // 
             // labelRequestor
@@ -177,7 +177,7 @@
             this.labelRequestor.AutoSize = true;
             this.labelRequestor.Location = new System.Drawing.Point(3, 0);
             this.labelRequestor.Name = "labelRequestor";
-            this.labelRequestor.Size = new System.Drawing.Size(180, 20);
+            this.labelRequestor.Size = new System.Drawing.Size(178, 20);
             this.labelRequestor.TabIndex = 0;
             this.labelRequestor.Text = "Requestor";
             this.labelRequestor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -189,7 +189,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelKey.AutoSize = true;
             this.labelKey.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.labelKey.Location = new System.Drawing.Point(189, 0);
+            this.labelKey.Location = new System.Drawing.Point(187, 0);
             this.labelKey.Name = "labelKey";
             this.labelKey.Size = new System.Drawing.Size(49, 20);
             this.labelKey.TabIndex = 1;
@@ -202,7 +202,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelVotes.AutoSize = true;
-            this.labelVotes.Location = new System.Drawing.Point(244, 0);
+            this.labelVotes.Location = new System.Drawing.Point(242, 0);
             this.labelVotes.Name = "labelVotes";
             this.labelVotes.Size = new System.Drawing.Size(43, 20);
             this.labelVotes.TabIndex = 2;
@@ -215,11 +215,11 @@
             this.buttonYes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonYes.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.buttonYes.ForeColor = System.Drawing.Color.White;
-            this.buttonYes.Location = new System.Drawing.Point(482, 2);
+            this.buttonYes.Location = new System.Drawing.Point(480, 2);
             this.buttonYes.Margin = new System.Windows.Forms.Padding(2);
             this.buttonYes.Name = "buttonYes";
             this.tableLayoutPanelMain.SetRowSpan(this.buttonYes, 2);
-            this.buttonYes.Size = new System.Drawing.Size(31, 46);
+            this.buttonYes.Size = new System.Drawing.Size(31, 44);
             this.buttonYes.TabIndex = 2;
             this.buttonYes.Text = "✔";
             this.buttonYes.UseVisualStyleBackColor = false;
@@ -231,11 +231,11 @@
             this.buttonNo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonNo.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.buttonNo.ForeColor = System.Drawing.Color.White;
-            this.buttonNo.Location = new System.Drawing.Point(517, 2);
+            this.buttonNo.Location = new System.Drawing.Point(515, 2);
             this.buttonNo.Margin = new System.Windows.Forms.Padding(2);
             this.buttonNo.Name = "buttonNo";
             this.tableLayoutPanelMain.SetRowSpan(this.buttonNo, 2);
-            this.buttonNo.Size = new System.Drawing.Size(31, 46);
+            this.buttonNo.Size = new System.Drawing.Size(31, 44);
             this.buttonNo.TabIndex = 3;
             this.buttonNo.Text = "❌";
             this.buttonNo.UseVisualStyleBackColor = false;
@@ -247,7 +247,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelEasySpeed.AutoSize = true;
-            this.labelEasySpeed.Location = new System.Drawing.Point(291, 30);
+            this.labelEasySpeed.Location = new System.Drawing.Point(289, 28);
             this.labelEasySpeed.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.labelEasySpeed.Name = "labelEasySpeed";
             this.labelEasySpeed.Size = new System.Drawing.Size(36, 20);
@@ -261,7 +261,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelNormalSpeed.AutoSize = true;
-            this.labelNormalSpeed.Location = new System.Drawing.Point(329, 30);
+            this.labelNormalSpeed.Location = new System.Drawing.Point(327, 28);
             this.labelNormalSpeed.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.labelNormalSpeed.Name = "labelNormalSpeed";
             this.labelNormalSpeed.Size = new System.Drawing.Size(36, 20);
@@ -275,7 +275,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelHardSpeed.AutoSize = true;
-            this.labelHardSpeed.Location = new System.Drawing.Point(367, 30);
+            this.labelHardSpeed.Location = new System.Drawing.Point(365, 28);
             this.labelHardSpeed.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.labelHardSpeed.Name = "labelHardSpeed";
             this.labelHardSpeed.Size = new System.Drawing.Size(36, 20);
@@ -289,7 +289,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelExpertSpeed.AutoSize = true;
-            this.labelExpertSpeed.Location = new System.Drawing.Point(405, 30);
+            this.labelExpertSpeed.Location = new System.Drawing.Point(403, 28);
             this.labelExpertSpeed.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.labelExpertSpeed.Name = "labelExpertSpeed";
             this.labelExpertSpeed.Size = new System.Drawing.Size(36, 20);
@@ -303,7 +303,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelPlusSpeed.AutoSize = true;
-            this.labelPlusSpeed.Location = new System.Drawing.Point(443, 30);
+            this.labelPlusSpeed.Location = new System.Drawing.Point(441, 28);
             this.labelPlusSpeed.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.labelPlusSpeed.Name = "labelPlusSpeed";
             this.labelPlusSpeed.Size = new System.Drawing.Size(36, 20);
@@ -314,10 +314,10 @@
             // iconEasy
             // 
             this.iconEasy.Image = ((System.Drawing.Image)(resources.GetObject("iconEasy.Image")));
-            this.iconEasy.Location = new System.Drawing.Point(291, 1);
+            this.iconEasy.Location = new System.Drawing.Point(289, 1);
             this.iconEasy.Margin = new System.Windows.Forms.Padding(1);
             this.iconEasy.Name = "iconEasy";
-            this.iconEasy.Size = new System.Drawing.Size(36, 28);
+            this.iconEasy.Size = new System.Drawing.Size(36, 26);
             this.iconEasy.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.iconEasy.TabIndex = 9;
             this.iconEasy.TabStop = false;
@@ -325,10 +325,10 @@
             // iconNormal
             // 
             this.iconNormal.Image = ((System.Drawing.Image)(resources.GetObject("iconNormal.Image")));
-            this.iconNormal.Location = new System.Drawing.Point(329, 1);
+            this.iconNormal.Location = new System.Drawing.Point(327, 1);
             this.iconNormal.Margin = new System.Windows.Forms.Padding(1);
             this.iconNormal.Name = "iconNormal";
-            this.iconNormal.Size = new System.Drawing.Size(36, 28);
+            this.iconNormal.Size = new System.Drawing.Size(36, 26);
             this.iconNormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.iconNormal.TabIndex = 10;
             this.iconNormal.TabStop = false;
@@ -336,10 +336,10 @@
             // iconHard
             // 
             this.iconHard.Image = ((System.Drawing.Image)(resources.GetObject("iconHard.Image")));
-            this.iconHard.Location = new System.Drawing.Point(367, 1);
+            this.iconHard.Location = new System.Drawing.Point(365, 1);
             this.iconHard.Margin = new System.Windows.Forms.Padding(1);
             this.iconHard.Name = "iconHard";
-            this.iconHard.Size = new System.Drawing.Size(36, 28);
+            this.iconHard.Size = new System.Drawing.Size(36, 26);
             this.iconHard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.iconHard.TabIndex = 11;
             this.iconHard.TabStop = false;
@@ -347,10 +347,10 @@
             // iconExpert
             // 
             this.iconExpert.Image = ((System.Drawing.Image)(resources.GetObject("iconExpert.Image")));
-            this.iconExpert.Location = new System.Drawing.Point(405, 1);
+            this.iconExpert.Location = new System.Drawing.Point(403, 1);
             this.iconExpert.Margin = new System.Windows.Forms.Padding(1);
             this.iconExpert.Name = "iconExpert";
-            this.iconExpert.Size = new System.Drawing.Size(36, 28);
+            this.iconExpert.Size = new System.Drawing.Size(36, 26);
             this.iconExpert.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.iconExpert.TabIndex = 12;
             this.iconExpert.TabStop = false;
@@ -358,10 +358,10 @@
             // iconPlus
             // 
             this.iconPlus.Image = ((System.Drawing.Image)(resources.GetObject("iconPlus.Image")));
-            this.iconPlus.Location = new System.Drawing.Point(443, 1);
+            this.iconPlus.Location = new System.Drawing.Point(441, 1);
             this.iconPlus.Margin = new System.Windows.Forms.Padding(1);
             this.iconPlus.Name = "iconPlus";
-            this.iconPlus.Size = new System.Drawing.Size(36, 28);
+            this.iconPlus.Size = new System.Drawing.Size(36, 26);
             this.iconPlus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.iconPlus.TabIndex = 13;
             this.iconPlus.TabStop = false;
@@ -370,9 +370,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.tableLayoutPanelMain);
             this.Name = "QueueListEntry";
-            this.Size = new System.Drawing.Size(550, 50);
+            this.Size = new System.Drawing.Size(548, 48);
             this.tableLayoutPanelMain.ResumeLayout(false);
             this.tableLayoutPanelMain.PerformLayout();
             this.tableLayoutPanelTop.ResumeLayout(false);
