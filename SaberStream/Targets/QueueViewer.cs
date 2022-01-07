@@ -1,5 +1,6 @@
 ﻿using SaberStream.Data;
 using SaberStream.Helpers;
+using SaberStream.Sources;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,36 +21,29 @@ namespace SaberStream.Targets
             Invoke(() => UpdateQueueItems(evt));
         }
 
-        private readonly List<Control> QueueItems = new();
-
         private void UpdateQueueItems(QueueChangeEventArgs evt)
         {
             if (evt.Added)
             {
-                int Row = this.tableLayoutPanelQueue.RowCount++;
-                this.tableLayoutPanelQueue.RowStyles.Add(new(SizeType.Absolute, 50));
                 QueueListEntry Entry = new(evt.Map)
                 {
-                    Dock = DockStyle.Fill
+                    Tag = evt.Map,
+                    BorderStyle = BorderStyle.FixedSingle
                 };
-                this.tableLayoutPanelQueue.Controls.Add(Entry, 0, Row);
-                this.QueueItems.Add(Entry);
+
+                this.flowLayoutPanelQueue.Controls.Add(Entry);
+                this.flowLayoutPanelQueue.Controls.SetChildIndex(Entry, evt.Index);
             }
             else
             {
-                int Index = evt.Index + 1;
-                Control Item = this.tableLayoutPanelQueue.GetControlFromPosition(0, Index);
-                if (Item is QueueListEntry)
+                Control? ToRemove = null;
+                foreach(Control Ctrl in this.flowLayoutPanelQueue.Controls)
                 {
-                    this.tableLayoutPanelQueue.Controls.Remove(Item);
-                    this.tableLayoutPanelQueue.RowStyles.RemoveAt(Index);
-                    for (int i = Index + 1; i < this.tableLayoutPanelQueue.RowCount; i++)
-                    {
-                        Control LowerControl = this.tableLayoutPanelQueue.GetControlFromPosition(0, i);
-                        this.tableLayoutPanelQueue.SetRow(LowerControl, i - 1);
-                    }
-                    this.tableLayoutPanelQueue.RowCount--;
+                    if ((Ctrl.Tag as MapInfo) == evt.Map) { ToRemove = Ctrl; break; }
                 }
+
+                if (ToRemove != null) { this.flowLayoutPanelQueue.Controls.Remove(ToRemove); }
+                
             }
         }
 
@@ -90,5 +84,15 @@ namespace SaberStream.Targets
                 e.SuppressKeyPress = true;
             }
         }
+
+        private void flowLayoutPanelQueue_Layout(object sender, LayoutEventArgs e)
+        {
+            foreach(Control Control in flowLayoutPanelQueue.Controls)
+            {
+                Control.Width = flowLayoutPanelQueue.ClientSize.Width - 6;
+            }
+        }
+
+        private void QueueViewer_FormClosed(object sender, FormClosedEventArgs e) => CommonEvents.InvokeExit(sender, new());
     }
 }

@@ -10,6 +10,7 @@ namespace SaberStream.Sources
         {
             Console.WriteLine("Exiting...");
             Exit?.Invoke(sender, evt);
+            Environment.Exit(0);
         }
 
         public delegate void DownloadRequestHandler(object? sender, DownloadRequestEventArgs evt);

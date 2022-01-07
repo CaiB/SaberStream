@@ -30,11 +30,11 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueueViewer));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanelQueue = new System.Windows.Forms.TableLayoutPanel();
             this.buttonAddToQueue = new System.Windows.Forms.Button();
             this.textBoxKeyToAdd = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.flowLayoutPanelQueue = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,11 +45,11 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanelQueue, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.buttonAddToQueue, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBoxKeyToAdd, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.button1, 3, 2);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanelQueue, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -59,21 +59,6 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 450);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // tableLayoutPanelQueue
-            // 
-            this.tableLayoutPanelQueue.AutoScroll = true;
-            this.tableLayoutPanelQueue.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanelQueue.ColumnCount = 1;
-            this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanelQueue, 4);
-            this.tableLayoutPanelQueue.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelQueue.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanelQueue.Location = new System.Drawing.Point(3, 38);
-            this.tableLayoutPanelQueue.Name = "tableLayoutPanelQueue";
-            this.tableLayoutPanelQueue.RowCount = 1;
-            this.tableLayoutPanelQueue.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelQueue.Size = new System.Drawing.Size(794, 374);
-            this.tableLayoutPanelQueue.TabIndex = 0;
             // 
             // buttonAddToQueue
             // 
@@ -118,6 +103,20 @@
             this.label1.Text = "No Song Played Yet";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // flowLayoutPanelQueue
+            // 
+            this.flowLayoutPanelQueue.AutoScroll = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanelQueue, 4);
+            this.flowLayoutPanelQueue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanelQueue.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanelQueue.Location = new System.Drawing.Point(0, 35);
+            this.flowLayoutPanelQueue.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanelQueue.Name = "flowLayoutPanelQueue";
+            this.flowLayoutPanelQueue.Size = new System.Drawing.Size(800, 380);
+            this.flowLayoutPanelQueue.TabIndex = 5;
+            this.flowLayoutPanelQueue.WrapContents = false;
+            this.flowLayoutPanelQueue.Layout += new System.Windows.Forms.LayoutEventHandler(this.flowLayoutPanelQueue_Layout);
+            // 
             // QueueViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -128,6 +127,7 @@
             this.MinimumSize = new System.Drawing.Size(600, 150);
             this.Name = "QueueViewer";
             this.Text = "SaberStream Queue Viewer";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.QueueViewer_FormClosed);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -137,10 +137,10 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelQueue;
         private System.Windows.Forms.Button buttonAddToQueue;
         private System.Windows.Forms.TextBox textBoxKeyToAdd;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelQueue;
     }
 }
