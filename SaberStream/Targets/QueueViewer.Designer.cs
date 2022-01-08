@@ -89,7 +89,7 @@
             this.buttonDeleteLast.Name = "buttonDeleteLast";
             this.buttonDeleteLast.Size = new System.Drawing.Size(194, 29);
             this.buttonDeleteLast.TabIndex = 3;
-            this.buttonDeleteLast.Text = "Delete Last Played";
+            this.buttonDeleteLast.Text = "The Bin Button™";
             this.buttonDeleteLast.UseVisualStyleBackColor = true;
             this.buttonDeleteLast.Click += new System.EventHandler(this.buttonDeleteLast_Click);
             // 
