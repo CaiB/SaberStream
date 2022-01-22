@@ -9,7 +9,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
+using System.Web;
 
 namespace SaberStream.Targets
 {
@@ -70,13 +72,22 @@ namespace SaberStream.Targets
 
             try
             {
-                string? FileName;
+                string? FileName = null;
                 string ZIPFilePath;
                 using (WebClient Client = new())
                 {
                     Client.OpenRead(Map.DownloadURL);
+
+                    // Try to get the intended file name
                     string? DispositionHeader = Client.ResponseHeaders?["content-disposition"];
-                    FileName = (DispositionHeader == null) ? null : new ContentDisposition(DispositionHeader).FileName;
+                    if (DispositionHeader != null) { FileName = GetFileNameFromHeader(DispositionHeader); }
+                    // This doesn't work because of illegal characters in the content-disposition header, thanks BeatSaver
+                    // FileName = (DispositionHeader == null) ? null : new ContentDisposition(DispositionHeader).FileName;
+
+                    // Make sure there's no characters disallowed by the filesystem
+                    if (FileName != null) { FileName = Regex.Replace(FileName, @"<|>|:|""|\/|\\|\||\?|\*|[\x00-\x1F]", "_", RegexOptions.CultureInvariant); }
+
+                    // Download the file, falling back on a name containing just the key in the worst case
                     ZIPFilePath = Path.Combine(TempDirectory, FileName ?? $"{key}.zip");
                     Client.DownloadFile(Map.DownloadURL, ZIPFilePath);
                 }
@@ -93,6 +104,34 @@ namespace SaberStream.Targets
                 Console.WriteLine($"Failed to download map '{key}':");
                 Console.WriteLine(exc);
             }
+        }
+
+        /// <summary>Tries to parse the filename from a content-disposition header using various methods</summary>
+        /// <remarks>It looks like the Beat Saver servers return invalid headers, so this is an ugly hack to work around that.</remarks>
+        /// <param name="contentDisposition">The value of the content-disposition header</param>
+        /// <returns>The filename, if it was able to be parsed, or null otherwise</returns>
+        private static string? GetFileNameFromHeader(string contentDisposition)
+        {
+            if (string.IsNullOrWhiteSpace(contentDisposition)) { return null; }
+            Regex UTF8Matcher = new(@"filename\*=UTF-8''([\w%\-\.]+)(?:; ?|$)", RegexOptions.IgnoreCase);
+            Regex ASCIIMatcher = new(@"filename=([""']?)(.*?[^\\])\1(?:; ?|$)", RegexOptions.IgnoreCase);
+
+            Match UTF8Match = UTF8Matcher.Match(contentDisposition);
+            if (UTF8Match.Success && UTF8Match.Groups.Count > 2)
+            {
+                string? DecodeResult = HttpUtility.UrlDecode(UTF8Match.Groups[2].Value);
+                if (!string.IsNullOrWhiteSpace(DecodeResult)) { return DecodeResult; }
+            }
+
+            Match ASCIIMatch = ASCIIMatcher.Match(contentDisposition);
+            if (ASCIIMatch.Success && ASCIIMatch.Groups.Count > 2)
+            {
+                string? DecodeResult = HttpUtility.UrlDecode(ASCIIMatch.Groups[2].Value);
+                if (!string.IsNullOrWhiteSpace(DecodeResult)) { return DecodeResult; }
+                
+            }
+
+            throw new InvalidDataException($"The content-disposition header could not be parsed. Header was \"{contentDisposition}\"");
         }
 
         private static void DeleteSong(string path)
