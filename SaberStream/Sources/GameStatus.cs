@@ -20,6 +20,7 @@ namespace SaberStream.Sources
 
         public static List<HistoryEntry> MapHistory { get; private set; } = new();
         public static MapInfoPlaying? CurrentMap { get; private set; }
+        public static MapInfoPlaying? PreviousMap { get; private set; }
         private static string? PreviousMapHash;
         private static bool JustFailed = false;
 
@@ -203,6 +204,7 @@ namespace SaberStream.Sources
             }
             SongEnded?.Invoke(typeof(GameStatus), new SongEndedEventArgs(success));
             StateTransition?.Invoke(typeof(GameStatus), new StateTransitionEventArgs(false));
+            PreviousMap = CurrentMap;
             CurrentMap = null;
         }
 

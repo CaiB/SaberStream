@@ -18,7 +18,7 @@ namespace SaberStream.Targets
         private void MessageHandler(object? sender, Twitch.MessageReceivedEventArgs evt)
         {
             string Message = evt.Message.Message;
-            if (Message.StartsWith("!bsr"))
+            if (Message.StartsWith("!bsr", StringComparison.CurrentCultureIgnoreCase))
             {
                 int SpaceIndex = Message.IndexOf(' ');
                 if (SpaceIndex < 0)
@@ -47,7 +47,7 @@ namespace SaberStream.Targets
                 if (Map.ExpertPlus != null) { Diffs.Append(FormatNS(Map.ExpertPlus, SongLength)); }
 
                 string DiffDesc;
-                if (Diffs.ToString() == DIFF_START) { DiffDesc = "No regular difficulties found. Maybe 306/one-handed-only?"; }
+                if (Diffs.ToString() == DIFF_START) { DiffDesc = "No regular difficulties found. Maybe 360/one-handed-only?"; }
                 else { DiffDesc = Diffs.Remove(Diffs.Length - 2, 2).ToString(); } // Remove the trailing ', '
 
                 Console.WriteLine($"Song request from {evt.Message.Username}: key {Key} ({Map.SongName} - {Map.SongAuthor}, Mapped by {Map.MapAuthor})");
@@ -55,6 +55,24 @@ namespace SaberStream.Targets
 
                 MapInfoRequest MapRequest = new(Map, Key) { Requestor = evt.Message.Username };
                 RequestQueue.AddItem(MapRequest);
+            }
+            else if (Message.StartsWith("!info", StringComparison.CurrentCultureIgnoreCase) || Message.StartsWith("!key", StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (GameStatus.CurrentMap == null && GameStatus.PreviousMap != null)
+                {
+                    MapInfoPlaying Map = GameStatus.PreviousMap;
+                    Console.WriteLine($"We just played \"{Map.SongName}\" by \"{Map.SongAuthor}\", mapped by {Map.MapAuthor}, key {Map.Key}.");
+                }
+                else if (GameStatus.CurrentMap != null)
+                {
+                    MapInfoPlaying Map = GameStatus.CurrentMap;
+                    Console.WriteLine($"We're currently playing \"{Map.SongName}\" by \"{Map.SongAuthor}\", mapped by {Map.MapAuthor}, key {Map.Key}.");
+                }
+            }
+            else if (Message.StartsWith("!link", StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (GameStatus.CurrentMap == null && GameStatus.PreviousMap != null) { Console.WriteLine($"We just played https://beatsaver.com/maps/{GameStatus.PreviousMap.Key}"); }
+                else if (GameStatus.CurrentMap != null) { Console.WriteLine($"We're currently playing https://beatsaver.com/maps/{GameStatus.CurrentMap.Key}"); }
             }
         }
 
