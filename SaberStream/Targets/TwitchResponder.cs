@@ -86,7 +86,7 @@ namespace SaberStream.Targets
         /// <summary>Outputs info to chat about the currently played map when we start playing it.</summary>
         protected static void HandleSongStart(object? sender, GameStatus.SongStartedEventArgs evt)
         {
-            if (!evt.Retry) { Twitch.SendMessage($"We are now playing \"{evt.Beatmap.SongName}\" by \"{evt.Beatmap.SongAuthor}\", mapped by {evt.Beatmap.MapAuthor}."); }
+            if (!evt.Retry) { Twitch.SendMessage($"We are now playing \"{evt.Beatmap.SongName}\" by \"{evt.Beatmap.SongAuthor}\", mapped by \"{evt.Beatmap.MapAuthor}\"."); }
         }
     }
 }
