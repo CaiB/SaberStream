@@ -11,11 +11,12 @@ namespace SaberStream.Targets
     {
         public TwitchResponder()
         {
-            Twitch.MessageReceived += MessageHandler;
+            Twitch.MessageReceived += HandleChatMessage;
+            GameStatus.SongStarted += HandleSongStart;
         }
 
         /// <summary>Handles messages in chat, and responds to requests.</summary>
-        private void MessageHandler(object? sender, Twitch.MessageReceivedEventArgs evt)
+        private void HandleChatMessage(object? sender, Twitch.MessageReceivedEventArgs evt)
         {
             string Message = evt.Message.Message;
             if (Message.StartsWith("!bsr", StringComparison.CurrentCultureIgnoreCase))
@@ -61,18 +62,18 @@ namespace SaberStream.Targets
                 if (GameStatus.CurrentMap == null && GameStatus.PreviousMap != null)
                 {
                     MapInfoPlaying Map = GameStatus.PreviousMap;
-                    Console.WriteLine($"We just played \"{Map.SongName}\" by \"{Map.SongAuthor}\", mapped by {Map.MapAuthor}, key {Map.Key}.");
+                    Twitch.SendMessage($"We just played \"{Map.SongName}\" by \"{Map.SongAuthor}\", mapped by {Map.MapAuthor}, key {Map.Key}.");
                 }
                 else if (GameStatus.CurrentMap != null)
                 {
                     MapInfoPlaying Map = GameStatus.CurrentMap;
-                    Console.WriteLine($"We're currently playing \"{Map.SongName}\" by \"{Map.SongAuthor}\", mapped by {Map.MapAuthor}, key {Map.Key}.");
+                    Twitch.SendMessage($"We're currently playing \"{Map.SongName}\" by \"{Map.SongAuthor}\", mapped by {Map.MapAuthor}, key {Map.Key}.");
                 }
             }
             else if (Message.StartsWith("!link", StringComparison.CurrentCultureIgnoreCase))
             {
-                if (GameStatus.CurrentMap == null && GameStatus.PreviousMap != null) { Console.WriteLine($"We just played https://beatsaver.com/maps/{GameStatus.PreviousMap.Key}"); }
-                else if (GameStatus.CurrentMap != null) { Console.WriteLine($"We're currently playing https://beatsaver.com/maps/{GameStatus.CurrentMap.Key}"); }
+                if (GameStatus.CurrentMap == null && GameStatus.PreviousMap != null) { Twitch.SendMessage($"We just played https://beatsaver.com/maps/{GameStatus.PreviousMap.Key}"); }
+                else if (GameStatus.CurrentMap != null) { Twitch.SendMessage($"We're currently playing https://beatsaver.com/maps/{GameStatus.CurrentMap.Key}"); }
             }
         }
 
@@ -81,5 +82,11 @@ namespace SaberStream.Targets
         /// <param name="songLength">How long the song is, in seconds</param>
         /// <returns>A string formatted like "H=3.67, " where H is the difficulty, and 3.67 is the average NPS of that difficulty</returns>
         private static string FormatNS(DifficultyInfo diff, float songLength) => $"{DifficultyUtil.GetShortName(diff.Difficulty)}={(diff.NoteCount / songLength):F2}, ";
+
+        /// <summary>Outputs info to chat about the currently played map when we start playing it.</summary>
+        protected static void HandleSongStart(object? sender, GameStatus.SongStartedEventArgs evt)
+        {
+            if (!evt.Retry) { Twitch.SendMessage($"We are now playing \"{evt.Beatmap.SongName}\" by \"{evt.Beatmap.SongAuthor}\", mapped by {evt.Beatmap.MapAuthor}."); }
+        }
     }
 }
