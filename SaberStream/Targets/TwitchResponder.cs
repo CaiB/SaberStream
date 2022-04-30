@@ -75,6 +75,10 @@ namespace SaberStream.Targets
                 if (GameStatus.CurrentMap == null && GameStatus.PreviousMap != null) { Twitch.SendMessage($"We just played https://beatsaver.com/maps/{GameStatus.PreviousMap.Key}"); }
                 else if (GameStatus.CurrentMap != null) { Twitch.SendMessage($"We're currently playing https://beatsaver.com/maps/{GameStatus.CurrentMap.Key}"); }
             }
+            else if (string.Equals(Message, "F", StringComparison.CurrentCultureIgnoreCase))
+            {
+                Twitch.SendMessage("F");
+            }
         }
 
         /// <summary>Formats a specific difficulty's note speed into a concise format for chat.</summary>
