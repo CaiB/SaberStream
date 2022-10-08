@@ -79,6 +79,21 @@ namespace SaberStream.Targets
             {
                 Twitch.SendMessage("F");
             }
+            else if (Message.StartsWith("!queue", StringComparison.CurrentCultureIgnoreCase) || Message.StartsWith("!list", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int QueueLength = RequestQueue.GetItemCount();
+                if (QueueLength > 0)
+                {
+                    Twitch.SendMessage(string.Format("There {2} {0} song{1} in the queue. Up next:", QueueLength, QueueLength == 1 ? "" : "s", QueueLength == 1 ? "is" : "are"));
+                    for (int i = 0; i < Math.Min(QueueLength, 3); i++)
+                    {
+                        MapInfo ItemInPos = RequestQueue.GetItem(i);
+                        MapInfoRequest? RequestItem = ItemInPos as MapInfoRequest;
+                        Twitch.SendMessage($"{ItemInPos.SongName} - {ItemInPos.MapAuthor} ({ItemInPos.Key}) {(RequestItem is not null ? "[" + RequestItem.Requestor + "]" : "")}");
+                    }
+                }
+                else { Twitch.SendMessage("The request queue is currently empty."); }
+            }
         }
 
         /// <summary>Formats a specific difficulty's note speed into a concise format for chat.</summary>

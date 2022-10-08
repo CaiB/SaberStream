@@ -59,15 +59,24 @@ namespace SaberStream.Graphics
         /// <returns>An array of pixels in {A B G R} format for each pixel</returns>
         private static byte[] ImageToRGBA(Image<Rgba32> img)
         {
-            if (!img.TryGetSinglePixelSpan(out Span<Rgba32> PixelSpan)) { throw new Exception("Could not get pixel span"); }
-            byte[] Pixels = new byte[PixelSpan.Length * 4];
-            for (int i = 0; i < PixelSpan.Length; i++) // TODO: This seems inefficient.
+            byte[] Pixels = Array.Empty<byte>();
+            img.ProcessPixelRows(PixAccess =>
             {
-                Pixels[(i * 4) + 0] = PixelSpan[i].R;
-                Pixels[(i * 4) + 1] = PixelSpan[i].G;
-                Pixels[(i * 4) + 2] = PixelSpan[i].B;
-                Pixels[(i * 4) + 3] = PixelSpan[i].A;
-            }
+                Pixels = new byte[(PixAccess.Height * PixAccess.Width) * 4];
+                for (int Y = 0; Y < PixAccess.Height; Y++)
+                {
+                    Span<Rgba32> Row = PixAccess.GetRowSpan(Y);
+                    for (int X = 0; X < Row.Length; X++)
+                    {
+                        int Index = Y * PixAccess.Width + X;
+                        Pixels[(Index * 4) + 0] = Row[X].R;
+                        Pixels[(Index * 4) + 1] = Row[X].G;
+                        Pixels[(Index * 4) + 2] = Row[X].B;
+                        Pixels[(Index * 4) + 3] = Row[X].A;
+                    }
+                }
+            });
+
             return Pixels;
         }
 
